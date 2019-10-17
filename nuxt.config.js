@@ -1,5 +1,15 @@
 import colors from 'vuetify/es5/util/colors'
 
+// only add `router.base = '/<repository-name>/'` if `DEPLOY_ENV` is `GH_PAGES`
+const routerBase =
+  process.env.DEPLOY_ENV === 'GH_PAGES'
+    ? {
+        router: {
+          base: '/wetter-app/'
+        }
+      }
+    : {}
+
 export default {
   mode: 'universal',
   /*
@@ -72,6 +82,7 @@ export default {
   /*
    ** Build configuration
    */
+  ...routerBase,
   build: {
     /*
      ** You can extend webpack config here
