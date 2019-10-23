@@ -1,7 +1,4 @@
 import colors from 'vuetify/es5/util/colors'
-const consola = require('consola')
-
-consola.info('Hallo :)')
 
 export default {
   mode: 'universal',
@@ -78,7 +75,8 @@ export default {
     }
   },
   workbox: {
-    importScripts: ['custom-sw.js']
+    importScripts: ['custom-sw.js'],
+    cachingExtensions: '@/plugins/workbox-range-request.js'
   },
   /*
    ** Build configuration
