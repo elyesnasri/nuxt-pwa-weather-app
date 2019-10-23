@@ -176,7 +176,7 @@ export default {
       }
     },
     updateCity() {
-      let url = `http://api.openweathermap.org/data/2.5/weather?q=${this.city}&units=metric&APPID=${this.appId}`
+      let url = `https://api.openweathermap.org/data/2.5/weather?q=${this.city}&units=metric&APPID=${this.appId}`
       this.getWeather(url)
     },
     getGeoLocation() {
@@ -191,7 +191,7 @@ export default {
       const lat = position.coords.latitude
       const long = position.coords.longitude
 
-      let url = `http://api.openweathermap.org/data/2.5/weather?units=metric&lat=${lat}&lon=${long}&APPID=${this.appId}`
+      let url = `https://api.openweathermap.org/data/2.5/weather?units=metric&lat=${lat}&lon=${long}&APPID=${this.appId}`
 
       this.getWeather(url)
     },

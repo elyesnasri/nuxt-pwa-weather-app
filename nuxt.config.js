@@ -1,4 +1,7 @@
 import colors from 'vuetify/es5/util/colors'
+const consola = require('consola')
+
+consola.info('Hallo :)')
 
 export default {
   mode: 'universal',
@@ -30,7 +33,12 @@ export default {
   /*
    ** Plugins to load before mounting the App
    */
-  plugins: [],
+  plugins: [
+    {
+      src: '~/plugins/sw.js',
+      ssr: false
+    }
+  ],
   /*
    ** Nuxt.js dev-modules
    */
@@ -68,6 +76,9 @@ export default {
         }
       }
     }
+  },
+  workbox: {
+    importScripts: ['custom-sw.js']
   },
   /*
    ** Build configuration
