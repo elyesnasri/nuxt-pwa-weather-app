@@ -48,6 +48,9 @@ export default {
       console.log('Sected City: ' + this.cityInput)
     },
     getWeather(url) {
+      //update the store
+      this.$store.commit('recent/update', 'Bousalam')
+
       this.weatherData.date = this.getDate()
       axios
         .get(url)
