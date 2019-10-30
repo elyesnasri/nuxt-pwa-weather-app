@@ -4,6 +4,8 @@ export const state = () => ({
 
 export const mutations = {
   update(state, city) {
-    state.citys.push(city)
+    if (!state.citys.indexOf(city) === -1) {
+      state.citys.push(city)
+    }
   }
 }

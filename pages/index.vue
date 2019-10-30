@@ -49,7 +49,7 @@ export default {
     },
     getWeather(url) {
       //update the store
-      this.$store.commit('recent/update', 'Bousalam')
+      this.$store.commit('recent/update', 'Kef')
 
       this.weatherData.date = this.getDate()
       axios
