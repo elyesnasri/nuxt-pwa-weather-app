@@ -1,10 +1,10 @@
 export const state = () => ({
-  citys: ['Reensburg', 'Paris', 'Cham']
+  citys: []
 })
 
 export const mutations = {
   update(state, city) {
-    if (!state.citys.indexOf(city) === -1) {
+    if (!state.citys.includes(city)) {
       state.citys.push(city)
     }
   }

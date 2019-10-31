@@ -44,13 +44,15 @@ export default {
     // get the value of the search field
     getCityInput() {
       let url = `https://api.openweathermap.org/data/2.5/weather?q=${this.city}&units=metric&APPID=${this.appId}`
+
       this.getWeather(url)
-      console.log('Sected City: ' + this.cityInput)
+
+      if (this.weatherData.city) {
+        //commit city to the store
+        // cache store citys in indexedDB
+      }
     },
     getWeather(url) {
-      //update the store
-      this.$store.commit('recent/update', 'Kef')
-
       this.weatherData.date = this.getDate()
       axios
         .get(url)
@@ -77,6 +79,12 @@ export default {
           this.weatherData.sunset = new Date(response.data.sys.sunset * 1000)
             .toLocaleTimeString('en-GB')
             .slice(0, 4)
+
+          //populate store from cache
+          this.$store.commit('recent/update', this.weatherData.city)
+
+          let citysArray = this.$store.state.recent.citys
+          this.$localForage.setItem('recentCitys', citysArray)
         })
         .catch((error) => {
           console.log(error)
@@ -119,11 +127,18 @@ export default {
         'Enable your broswer to get your location or just search any city'
       this.snackbar = true
       this.updateCity('Regensburg')
+    },
+    async populateStoreFromCache() {
+      let recentCitys = await this.$localForage.getItem('recentCitys')
+
+      for (let city in recentCitys) {
+        this.$store.commit('recent/update', recentCitys[city])
+      }
     }
-    // update the weather (call update method in the store)
   },
   beforeMount() {
     this.getGeoLocation()
+    this.populateStoreFromCache()
   }
 }
 </script>
