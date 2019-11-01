@@ -35,7 +35,10 @@ export default {
   },
   methods: {
     cacheSelectedCity(city) {
-      this.$router.push('/')
+      console.log('clicked citys is: ' + city)
+
+      // this.$router.push('/')
+      this.$router.push({ name: 'index', params: { selectedCity: city } })
     }
   }
 }

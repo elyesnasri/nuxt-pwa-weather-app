@@ -22,6 +22,7 @@ export default {
   data() {
     return {
       city: '',
+      selectedCity: '',
       appId: 'd944d4eb280d335ab5214b3dfae879c5',
       weatherData: {
         city: '',
@@ -39,6 +40,7 @@ export default {
       }
     }
   },
+  created() {},
   methods: {
     // first load get the geo location and update the weather
     // get the value of the search field
@@ -137,8 +139,16 @@ export default {
     }
   },
   beforeMount() {
-    this.getGeoLocation()
-    this.populateStoreFromCache()
+    this.selectedCity = this.$route.params.selectedCity
+    console.log('params:' + this.selectedCity)
+
+    if (this.selectedCity) {
+      let url = `https://api.openweathermap.org/data/2.5/weather?q=${this.selectedCity}&units=metric&APPID=${this.appId}`
+      this.getWeather(url)
+    } else {
+      this.getGeoLocation()
+      this.populateStoreFromCache()
+    }
   }
 }
 </script>
