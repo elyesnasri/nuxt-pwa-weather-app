@@ -31,10 +31,10 @@ export default {
    ** Plugins to load before mounting the App
    */
   plugins: [
-    {
-      src: '~/plugins/sw.js',
-      ssr: false
-    }
+    // {
+    //   src: '~/plugins/sw.js',
+    //   ssr: false
+    // }
   ],
   /*
    ** Nuxt.js dev-modules
