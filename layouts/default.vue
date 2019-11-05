@@ -1,5 +1,5 @@
 <template>
-  <v-app dark>
+  <v-app dark class="day">
     <v-content>
       <v-container>
         <nuxt />
@@ -28,3 +28,11 @@ export default {
   }
 }
 </script>
+
+<style>
+.day {
+  /* background-image: linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1)),
+    url('../static/weather_day.png'); */
+  background-image: url('https://previews.123rf.com/images/simple05/simple051809/simple05180900008/110353626-sky-with-clouds-on-a-sunny-day-vector-illustration.jpg');
+}
+</style>
