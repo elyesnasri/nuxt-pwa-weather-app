@@ -31,8 +31,10 @@ export default {
 
 <style>
 .day {
-  /* background-image: linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1)),
-    url('../static/weather_day.png'); */
-  background-image: url('https://previews.123rf.com/images/simple05/simple051809/simple05180900008/110353626-sky-with-clouds-on-a-sunny-day-vector-illustration.jpg');
+  background-image: linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1)),
+    url('../static/weather_day.jpg');
+  /* background-size: 400px 864px; */
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
 }
 </style>
