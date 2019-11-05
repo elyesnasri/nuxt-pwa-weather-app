@@ -6,7 +6,7 @@
           <v-text-field v-model="city" label="City" filled></v-text-field>
         </v-form>
       </v-col>
-      <Weather :data="weatherData" />
+      <Weather :data="weatherData" :appTime="dayTime" />
     </v-flex>
   </v-layout>
 </template>
@@ -37,7 +37,8 @@ export default {
         sunrise: '',
         sunset: '',
         date: ''
-      }
+      },
+      dayTime: ''
     }
   },
   created() {},
@@ -94,6 +95,14 @@ export default {
     },
     getDate() {
       let date = new Date()
+      let h = date.getHours()
+
+      if (h > 6 && h < 20) {
+        this.dayTime = 'day'
+      } else {
+        this.dayTime = 'night'
+      }
+
       let weekDays = [
         'Sunday',
         'Monday',
@@ -152,6 +161,3 @@ export default {
   }
 }
 </script>
-
-<style>
-</style>

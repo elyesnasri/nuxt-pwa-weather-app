@@ -1,5 +1,5 @@
 <template>
-  <v-app dark class="day">
+  <v-app dark>
     <v-content>
       <v-container>
         <nuxt />
@@ -28,13 +28,3 @@ export default {
   }
 }
 </script>
-
-<style>
-.day {
-  background-image: linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1)),
-    url('../static/weather_day.svg');
-  /* background-size: 400px 864px; */
-  background-repeat: no-repeat;
-  background-size: 100% 100%;
-}
-</style>

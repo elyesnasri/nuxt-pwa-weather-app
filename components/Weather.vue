@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div :class="appTime">
     <v-row no-gutters>
       <v-col cols="12" align="center">
         <h2>{{data.city}}</h2>
@@ -57,6 +57,10 @@ export default {
     data: {
       type: Object,
       required: true
+    },
+    appTime: {
+      type: String,
+      required: true
     }
   }
 }
@@ -66,5 +70,17 @@ export default {
 .currentTemp {
   font-size: 120px;
   margin: 80px 0 80px 0;
+}
+.day {
+  background-image: linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1)),
+    url('../static/weather_day.svg');
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+}
+.night {
+  background-image: linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1)),
+    url('../static/weather_night.svg');
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
 }
 </style>
