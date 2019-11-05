@@ -41,19 +41,12 @@ export default {
       dayTime: ''
     }
   },
-  created() {},
   methods: {
     // first load get the geo location and update the weather
     // get the value of the search field
     getCityInput() {
       let url = `https://api.openweathermap.org/data/2.5/weather?q=${this.city}&units=metric&APPID=${this.appId}`
-
       this.getWeather(url)
-
-      if (this.weatherData.city) {
-        //commit city to the store
-        // cache store citys in indexedDB
-      }
     },
     getWeather(url) {
       this.weatherData.date = this.getDate()
@@ -90,7 +83,8 @@ export default {
           this.$localForage.setItem('recentCitys', citysArray)
         })
         .catch((error) => {
-          console.log(error)
+          // console.log(error)
+          this.$router.push('history')
         })
     },
     getDate() {
