@@ -55,8 +55,6 @@ export default {
     }
   },
   methods: {
-    // first load get the geo location and update the weather
-    // get the value of the search field
     getCityInput() {
       console.log('search input: ' + this.search)
 
@@ -72,9 +70,13 @@ export default {
     },
     getWeather(url) {
       this.weatherData.date = this.getDate()
+      console.log('[Date]: ' + this.weatherData.date)
+
       axios
         .get(url)
         .then((response) => {
+          console.log(response)
+
           this.weatherData.city = response.data.name
           this.weatherData.currentTemp = Math.round(
             response.data.main.temp
@@ -92,20 +94,35 @@ export default {
           this.weatherData.icon =
             'images/' + response.data.weather[0].icon.slice(0, 2) + '.svg'
           this.weatherData.sunrise = new Date(response.data.sys.sunrise * 1000)
-            .toLocaleTimeString('en-GB')
+            .toLocaleTimeString('en-DE')
             .slice(0, 4)
           this.weatherData.sunset = new Date(response.data.sys.sunset * 1000)
-            .toLocaleTimeString('en-GB')
+            .toLocaleTimeString('en-DE')
             .slice(0, 4)
 
+          let dateServer = new Date('Wed Nov 06 2019 21:15:58')
+          let timeServer = new Date(response.data.dt * 1000).toLocaleTimeString(
+            'en-DE'
+          )
+          console.log('Server: ' + dateServer + timeServer)
+
+          let dateNow = new Date()
+          let timeNow = new Date().toTimeString('en-DE')
+          console.log('Now: ' + dateNow + timeNow)
+
+          var minutes = Math.round((dateNow - dateServer) / 1000 / 60)
+
+          console.log('[Diff]: ' + dif)
+
+          //caching citys
           if (!this.recentCitys.includes(this.weatherData.city))
             this.recentCitys.push(this.weatherData.city)
 
           this.$localForage.setItem('recentCitys', this.recentCitys)
         })
         .catch((error) => {
-          // console.log(error)
-          this.$router.push('history')
+          console.log(error)
+          // this.$router.push('history')
         })
     },
     getDate() {
@@ -122,7 +139,11 @@ export default {
 
       let tt = weekDays[date.getDay()]
       let mm = date.getMonth() + 1
+
       return tt + ', ' + mm
+    },
+    getUpdateTime() {
+      let actTime = new Date()
     },
     getGeoLocation() {
       console.log('getLocation...')
