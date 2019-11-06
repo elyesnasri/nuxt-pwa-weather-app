@@ -3,7 +3,14 @@
     <v-flex xs12 sm8 md6>
       <v-col cols="12">
         <v-form @submit.prevent="getCityInput">
-          <v-text-field v-model="city" label="City" filled></v-text-field>
+          <!-- <v-text-field v-model="city" label="City" filled></v-text-field> -->
+          <v-autocomplete
+            :search-input.sync="city"
+            label="City"
+            :items="recentCitys"
+            filled
+            rounded
+          ></v-autocomplete>
         </v-form>
       </v-col>
       <Weather :data="weatherData" :appTime="dayTime" />
@@ -38,7 +45,8 @@ export default {
         sunset: '',
         date: ''
       },
-      dayTime: ''
+      dayTime: '',
+      recentCitys: []
     }
   },
   methods: {
@@ -47,6 +55,7 @@ export default {
     getCityInput() {
       let url = `https://api.openweathermap.org/data/2.5/weather?q=${this.city}&units=metric&APPID=${this.appId}`
       this.getWeather(url)
+      console.log(this.city)
     },
     getWeather(url) {
       this.weatherData.date = this.getDate()
@@ -76,11 +85,16 @@ export default {
             .toLocaleTimeString('en-GB')
             .slice(0, 4)
 
-          //populate store from cache
-          this.$store.commit('recent/update', this.weatherData.city)
+          // //populate store from cache
+          // this.$store.commit('recent/update', this.weatherData.city)
 
-          let citysArray = this.$store.state.recent.citys
-          this.$localForage.setItem('recentCitys', citysArray)
+          // // cache saved citys to indexedDB
+          // let citysArray = this.$store.state.recent.citys
+
+          if (!this.recentCitys.includes(this.weatherData.city))
+            this.recentCitys.push(this.weatherData.city)
+
+          this.$localForage.setItem('recentCitys', this.recentCitys)
         })
         .catch((error) => {
           // console.log(error)
@@ -112,46 +126,60 @@ export default {
       return tt + ', ' + mm
     },
     getGeoLocation() {
+      console.log('getLocation...')
+
       if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-          this.getCityName,
-          this.geoError
-        )
+        console.log('getCurrentPosition')
+
+        navigator.geolocation.getCurrentPosition(this.getCoords, this.geoError)
       }
     },
-    getCityName(position) {
+    getCoords(position) {
       const lat = position.coords.latitude
       const long = position.coords.longitude
 
       let url = `https://api.openweathermap.org/data/2.5/weather?units=metric&lat=${lat}&lon=${long}&APPID=${this.appId}`
-
       this.getWeather(url)
     },
     geoError() {
-      this.text =
-        'Enable your broswer to get your location or just search any city'
-      this.snackbar = true
-      this.updateCity('Regensburg')
+      console.log(
+        'Enable to get Coordinates. You can use your history to get weather data.'
+      )
     },
-    async populateStoreFromCache() {
+    async populateAutocompleteFromCache() {
+      console.log('[Store]: geting citys from cache')
+
       let recentCitys = await this.$localForage.getItem('recentCitys')
 
       for (let city in recentCitys) {
-        this.$store.commit('recent/update', recentCitys[city])
+        // this.$store.commit('recent/update', recentCitys[city])
+        this.recentCitys.push(recentCitys[city])
       }
     }
   },
-  beforeMount() {
-    this.selectedCity = this.$route.params.selectedCity
-    console.log('params:' + this.selectedCity)
-
-    if (this.selectedCity) {
-      let url = `https://api.openweathermap.org/data/2.5/weather?q=${this.selectedCity}&units=metric&APPID=${this.appId}`
-      this.getWeather(url)
-    } else {
-      this.getGeoLocation()
-      this.populateStoreFromCache()
-    }
+  mounted() {
+    this.populateAutocompleteFromCache()
+    this.getGeoLocation()
   }
+  // beforeMount() {
+  //   this.selectedCity = this.$route.params.selectedCity
+  //   console.log('params:' + this.selectedCity)
+
+  //   // check if there any params from navigation recent -> index
+  //   if (typeof this.selectedCity !== 'undefined') {
+  //     let url = `https://api.openweathermap.org/data/2.5/weather?q=${this.selectedCity}&units=metric&APPID=${this.appId}`
+  //     this.getWeather(url)
+  //   } else {
+  //     this.getGeoLocation()
+  //     this.populateAutocompleteFromCache()
+  //   }
+  // }
+  // computed: {
+  //   blabla: function() {
+  //     // filling autocomplete with saved citys from the store
+  //     this.recentCitys = ['helo', 'hey']
+  //     // return this.$store.state.recent.citys
+  //   }
+  // }
 }
 </script>
