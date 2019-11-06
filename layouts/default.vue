@@ -1,5 +1,5 @@
 <template>
-  <v-app class="app" :class="dayTime">
+  <v-app light class="app" :class="dayTime">
     <v-content>
       <nuxt />
     </v-content>
@@ -10,7 +10,8 @@
 export default {
   data() {
     return {
-      dayTime: 'night'
+      dayTime: 'night',
+      isDark: false
     }
   },
   beforeMount() {
@@ -19,8 +20,10 @@ export default {
 
     if (h > 6 && h < 20) {
       this.dayTime = 'day'
+      this.$vuetify.theme.dark = false
     } else {
       this.dayTime = 'night'
+      this.$vuetify.theme.dark = true
     }
   }
 }
