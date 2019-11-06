@@ -36,18 +36,16 @@ export default {
 }
 
 .day {
-  /* background: #4caf50 !important; */
   background-image: linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1)),
     url('../static/weather_day.svg') !important;
-  background-repeat: no-repeat;
-  background-size: 100% 100%;
+  background-repeat: no-repeat !important;
+  background-position: center bottom !important;
 }
 
 .night {
-  /* background: #bb0000 !important; */
   background-image: linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1)),
     url('../static/weather_night.svg') !important;
-  background-repeat: no-repeat;
-  background-size: 100% 100%;
+  background-repeat: no-repeat !important;
+  background-position: center bottom !important;
 }
 </style>
