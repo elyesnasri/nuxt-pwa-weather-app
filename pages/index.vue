@@ -1,19 +1,23 @@
 <template>
   <v-layout column justify-center align-center>
-    <v-flex xs12 sm8 md6>
+    <v-flex xs12>
       <v-col cols="12">
         <v-form @submit.prevent="getCityInput">
-          <!-- <v-text-field v-model="city" label="City" filled></v-text-field> -->
           <v-autocomplete
-            :search-input.sync="city"
+            :search-input.sync="search"
+            v-model="city"
+            @change="getChanged(city)"
             label="City"
             :items="recentCitys"
             filled
             rounded
+            clearable
+            open-on-clear
           ></v-autocomplete>
         </v-form>
       </v-col>
-      <Weather :data="weatherData" :appTime="dayTime" />
+
+      <Weather :data="weatherData" />
     </v-flex>
   </v-layout>
 </template>
@@ -29,6 +33,7 @@ export default {
   data() {
     return {
       city: '',
+      search: '',
       selectedCity: '',
       appId: 'd944d4eb280d335ab5214b3dfae879c5',
       weatherData: {
@@ -53,9 +58,17 @@ export default {
     // first load get the geo location and update the weather
     // get the value of the search field
     getCityInput() {
-      let url = `https://api.openweathermap.org/data/2.5/weather?q=${this.city}&units=metric&APPID=${this.appId}`
-      this.getWeather(url)
-      console.log(this.city)
+      console.log('search input: ' + this.search)
+
+      if (this.search) {
+        let url = `https://api.openweathermap.org/data/2.5/weather?q=${this.search}&units=metric&APPID=${this.appId}`
+        this.getWeather(url)
+      }
+    },
+    getChanged(city) {
+      console.log('changed city: ' + city)
+      this.search = city
+      this.getCityInput()
     },
     getWeather(url) {
       this.weatherData.date = this.getDate()
@@ -85,12 +98,6 @@ export default {
             .toLocaleTimeString('en-GB')
             .slice(0, 4)
 
-          // //populate store from cache
-          // this.$store.commit('recent/update', this.weatherData.city)
-
-          // // cache saved citys to indexedDB
-          // let citysArray = this.$store.state.recent.citys
-
           if (!this.recentCitys.includes(this.weatherData.city))
             this.recentCitys.push(this.weatherData.city)
 
@@ -103,14 +110,6 @@ export default {
     },
     getDate() {
       let date = new Date()
-      let h = date.getHours()
-
-      if (h > 6 && h < 20) {
-        this.dayTime = 'day'
-      } else {
-        this.dayTime = 'night'
-      }
-
       let weekDays = [
         'Sunday',
         'Monday',
@@ -147,12 +146,9 @@ export default {
       )
     },
     async populateAutocompleteFromCache() {
-      console.log('[Store]: geting citys from cache')
-
       let recentCitys = await this.$localForage.getItem('recentCitys')
 
       for (let city in recentCitys) {
-        // this.$store.commit('recent/update', recentCitys[city])
         this.recentCitys.push(recentCitys[city])
       }
     }
@@ -161,25 +157,5 @@ export default {
     this.populateAutocompleteFromCache()
     this.getGeoLocation()
   }
-  // beforeMount() {
-  //   this.selectedCity = this.$route.params.selectedCity
-  //   console.log('params:' + this.selectedCity)
-
-  //   // check if there any params from navigation recent -> index
-  //   if (typeof this.selectedCity !== 'undefined') {
-  //     let url = `https://api.openweathermap.org/data/2.5/weather?q=${this.selectedCity}&units=metric&APPID=${this.appId}`
-  //     this.getWeather(url)
-  //   } else {
-  //     this.getGeoLocation()
-  //     this.populateAutocompleteFromCache()
-  //   }
-  // }
-  // computed: {
-  //   blabla: function() {
-  //     // filling autocomplete with saved citys from the store
-  //     this.recentCitys = ['helo', 'hey']
-  //     // return this.$store.state.recent.citys
-  //   }
-  // }
 }
 </script>
