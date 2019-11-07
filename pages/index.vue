@@ -18,6 +18,10 @@
       </v-col>
       <button type="button" @click="notify">Show notification</button>
       <Weather :data="weatherData" />
+      <v-snackbar v-model="snackbar">
+        {{ textSnackbar }}
+        <v-btn color="pink" texSnackBar @click="snackbar = false">Close</v-btn>
+      </v-snackbar>
     </v-flex>
   </v-layout>
 </template>
@@ -32,6 +36,8 @@ export default {
   },
   data() {
     return {
+      snackbar: false,
+      textSnackbar: '',
       city: '',
       search: '',
       selectedCity: '',
@@ -103,8 +109,8 @@ export default {
           this.$localForage.setItem('recentCitys', this.recentCitys)
         })
         .catch((error) => {
-          console.log(error)
-          // this.$router.push('history')
+          this.textSnackbar = 'Somthing went wrong :('
+          this.snackbar = true
         })
     },
     notify() {
