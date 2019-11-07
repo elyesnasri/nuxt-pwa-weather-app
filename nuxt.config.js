@@ -61,6 +61,9 @@ export default {
       allowLocalhostAsSecureOrigin: true,
       welcomeNotification: {
         disable: true
+      },
+      notifyButton: {
+        enable: true
       }
     }
   },
