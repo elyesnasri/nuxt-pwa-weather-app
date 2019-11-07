@@ -16,7 +16,11 @@
           ></v-autocomplete>
         </v-form>
       </v-col>
-      <button type="button" @click="notify">Show notification</button>
+      <v-col cols="12" align="center">
+        <v-btn text icon @click="notify">
+          <v-icon>mdi-bell</v-icon>
+        </v-btn>
+      </v-col>
       <Weather :data="weatherData" />
       <v-snackbar v-model="snackbar">
         {{ textSnackbar }}
@@ -36,6 +40,7 @@ export default {
   },
   data() {
     return {
+      isDark: false,
       snackbar: false,
       textSnackbar: '',
       city: '',
