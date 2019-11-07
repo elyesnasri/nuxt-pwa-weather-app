@@ -2,12 +2,17 @@
   <div>
     <v-container>
       <v-row no-gutters>
-        <v-col cols="12" align="center">
+        <v-col cols="12" align="center" class="my-12">
           <h2>{{data.city}}</h2>
         </v-col>
-        <v-col align="center">{{data.overcast}}</v-col>
-        <v-col align="center" cols="12" class="currentTemp">{{data.currentTemp}}°</v-col>
-        <v-col cols="12">
+        <v-col align="center" cols="12" class="my-12">
+          <span class="display-4">{{data.currentTemp}}°</span>
+        </v-col>
+        <v-col align="center" cols="12" class>{{data.overcast}}</v-col>
+        <v-col align="center" cols="12" class>
+          <span>{{data.maxTemp}}° / {{data.minTemp}}°</span>
+        </v-col>
+        <!-- <v-col cols="12">
           <span>Date: {{data.date}}</span>
           <hr />
           <span>
@@ -18,17 +23,17 @@
             Sunset:
             {{data.sunset}}
           </span>
-        </v-col>
-        <v-row>
+        </v-col>-->
+        <!-- <v-row>
           <v-col>
             <span>Max: {{data.maxTemp}}°</span>
           </v-col>
           <v-col>
             <span>Min: {{data.minTemp}}°</span>
           </v-col>
-        </v-row>
+        </v-row>-->
 
-        <v-row>
+        <!-- <v-row>
           <v-col>
             humidity:
             {{data.humidity}}
@@ -41,7 +46,7 @@
             Wind:
             {{data.wind}}
           </v-col>
-        </v-row>
+        </v-row>-->
       </v-row>
     </v-container>
   </div>

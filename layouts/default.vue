@@ -18,7 +18,7 @@ export default {
     let date = new Date()
     let h = date.getHours()
 
-    if (h > 6 && h < 20) {
+    if (h > 6 && h < 17) {
       this.dayTime = 'day'
       this.$vuetify.theme.dark = false
     } else {
@@ -36,15 +36,17 @@ export default {
 }
 
 .day {
+  background: #67a4c7 !important;
   background-image: linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1)),
-    url('../static/weather_day.svg') !important;
+    url('../static/landscape_day.svg') !important;
   background-repeat: no-repeat !important;
   background-position: center bottom !important;
 }
 
 .night {
+  background: #12142a !important;
   background-image: linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1)),
-    url('../static/weather_night.svg') !important;
+    url('../static/landscape_night.svg') !important;
   background-repeat: no-repeat !important;
   background-position: center bottom !important;
 }
