@@ -14,7 +14,7 @@ export default {
       isDark: false
     }
   },
-  beforeMount() {
+  mounted() {
     let date = new Date()
     let h = date.getHours()
 

@@ -54,6 +54,14 @@ export default {
    ** See https://axios.nuxtjs.org/options
    */
   axios: {},
+  pwa: {
+    manifest: {
+      name: 'Progressive weather app',
+      lang: 'en',
+      display: 'standalone',
+      orientation: 'portrait'
+    }
+  },
   /*
    ** vuetify module configuration
    ** https://github.com/nuxt-community/vuetify-module
