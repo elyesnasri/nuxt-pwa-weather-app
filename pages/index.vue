@@ -16,8 +16,12 @@
           ></v-autocomplete>
         </v-form>
       </v-col>
-
+      <button type="button" @click="notify">Show notification</button>
       <Weather :data="weatherData" />
+      <v-snackbar v-model="snackbar">
+        {{ textSnackbar }}
+        <v-btn color="pink" texSnackBar @click="snackbar = false">Close</v-btn>
+      </v-snackbar>
     </v-flex>
   </v-layout>
 </template>
@@ -32,6 +36,8 @@ export default {
   },
   data() {
     return {
+      snackbar: false,
+      textSnackbar: '',
       city: '',
       search: '',
       selectedCity: '',
@@ -69,14 +75,9 @@ export default {
       this.getCityInput()
     },
     getWeather(url) {
-      this.weatherData.date = this.getDate()
-      console.log('[Date]: ' + this.weatherData.date)
-
       axios
         .get(url)
         .then((response) => {
-          console.log(response)
-
           this.weatherData.city = response.data.name
           this.weatherData.currentTemp = Math.round(
             response.data.main.temp
@@ -99,20 +100,7 @@ export default {
           this.weatherData.sunset = new Date(response.data.sys.sunset * 1000)
             .toLocaleTimeString('en-DE')
             .slice(0, 4)
-
-          let dateServer = new Date('Wed Nov 06 2019 21:15:58')
-          let timeServer = new Date(response.data.dt * 1000).toLocaleTimeString(
-            'en-DE'
-          )
-          console.log('Server: ' + dateServer + timeServer)
-
-          let dateNow = new Date()
-          let timeNow = new Date().toTimeString('en-DE')
-          console.log('Now: ' + dateNow + timeNow)
-
-          var minutes = Math.round((dateNow - dateServer) / 1000 / 60)
-
-          console.log('[Diff]: ' + dif)
+          this.weatherData.date = this.getDate(response.data.dt * 1000)
 
           //caching citys
           if (!this.recentCitys.includes(this.weatherData.city))
@@ -121,26 +109,41 @@ export default {
           this.$localForage.setItem('recentCitys', this.recentCitys)
         })
         .catch((error) => {
-          console.log(error)
-          // this.$router.push('history')
+          this.textSnackbar = 'Somthing went wrong :('
+          this.snackbar = true
         })
     },
-    getDate() {
-      let date = new Date()
-      let weekDays = [
-        'Sunday',
-        'Monday',
-        'Tuesday',
-        'Wednesday',
-        'Thursday',
-        'Friday',
-        'Saturday'
-      ]
+    notify() {
+      // https://developer.mozilla.org/en-US/docs/Web/API/Notification/Notification#Parameters
+      // this.$notification.show(
+      //   'Hello World',
+      //   {
+      //     body: 'This is an example!'
+      //   },
+      //   {}
+      // )
+      if ('Notification' in window) {
+        Notification.requestPermission().then(function(result) {
+          console.log(result)
+          if (result === 'granted') {
+            var options = {
+              body: 'Do you like my body?',
+              vibrate: [200, 100, 200]
+            }
+            var notification = new Notification(
+              'Progressive Weather says: ',
+              options
+            )
+          }
+        })
+      }
+    },
+    getDate(dateServer) {
+      let date = new Date(dateServer)
 
-      let tt = weekDays[date.getDay()]
-      let mm = date.getMonth() + 1
-
-      return tt + ', ' + mm
+      return date
+        .toLocaleDateString('de-DE')
+        .concat(' ', date.toLocaleTimeString('de-DE'))
     },
     getUpdateTime() {
       let actTime = new Date()
@@ -177,6 +180,16 @@ export default {
   mounted() {
     this.populateAutocompleteFromCache()
     this.getGeoLocation()
+
+    this.$OneSignal.push(() => {
+      this.$OneSignal.isPushNotificationsEnabled((isEnabled) => {
+        if (isEnabled) {
+          console.log('Push notifications are enabled!')
+        } else {
+          console.log('Push notifications are not enabled yet.')
+        }
+      })
+    })
   }
 }
 </script>
