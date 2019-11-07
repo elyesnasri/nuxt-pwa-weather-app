@@ -16,7 +16,7 @@
           ></v-autocomplete>
         </v-form>
       </v-col>
-
+      <button type="button" @click="notify">Show notification</button>
       <Weather :data="weatherData" />
     </v-flex>
   </v-layout>
@@ -106,6 +106,47 @@ export default {
           console.log(error)
           // this.$router.push('history')
         })
+    },
+    notify() {
+      // https://developer.mozilla.org/en-US/docs/Web/API/Notification/Notification#Parameters
+      // this.$notification.show(
+      //   'Hello World',
+      //   {
+      //     body: 'This is an example!'
+      //   },
+      //   {}
+      // )
+      if ('Notification' in window) {
+        Notification.requestPermission().then(function(result) {
+          console.log(result)
+          if (result === 'granted') {
+            var options = {
+              body: 'Do you like my body?',
+              vibrate: [200, 100, 200]
+            }
+            var notification = new Notification(
+              'Progressive Weather says: ',
+              options
+            )
+          }
+        })
+      }
+
+      const updatesChannel = new BroadcastChannel('api-updates')
+      updatesChannel.addEventListener('message', async (event) => {
+        const { cacheName, updatedUrl } = event.data.payload
+
+        // Do something with cacheName and updatedUrl.
+        // For example, get the cached content and update
+        // the content on the page.
+        const cache = await caches.open(cacheName)
+        const updatedResponse = await cache.match(updatedUrl)
+        const updatedText = await updatedResponse.text()
+        console.log(updatedResponse)
+        console.log(updatedText)
+
+        console.log('data are updated in backround!')
+      })
     },
     getDate(dateServer) {
       let date = new Date(dateServer)
