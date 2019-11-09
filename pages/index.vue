@@ -27,6 +27,9 @@
         <v-btn color="pink" texSnackBar @click="snackbar = false">Close</v-btn>
       </v-snackbar>
     </v-flex>
+    <v-overlay :value="overlay">
+      <v-progress-circular indeterminate size="64"></v-progress-circular>
+    </v-overlay>
   </v-layout>
 </template>
 
@@ -42,6 +45,7 @@ export default {
     return {
       isDark: false,
       snackbar: false,
+      overlay: false,
       textSnackbar: '',
       city: '',
       search: '',
@@ -65,6 +69,14 @@ export default {
       recentCitys: []
     }
   },
+  watch: {
+    overlay(val) {
+      val &&
+        setTimeout(() => {
+          this.overlay = false
+        }, 3000)
+    }
+  },
   methods: {
     getCityInput() {
       console.log('search input: ' + this.search)
@@ -80,31 +92,29 @@ export default {
       this.getCityInput()
     },
     getWeather(url) {
+      this.overlay = true
       axios
         .get(url)
         .then((response) => {
           this.weatherData.city = response.data.name
-          this.weatherData.currentTemp = Math.round(
-            response.data.main.temp
-          ).toString()
-          this.weatherData.minTemp = Math.round(
-            response.data.main.temp_min
-          ).toString()
-          this.weatherData.maxTemp = Math.round(
-            response.data.main.temp_max
-          ).toString()
-          this.weatherData.pressure = response.data.main.pressure
-          this.weatherData.humidity = response.data.main.humidity + '%'
-          this.weatherData.wind = response.data.wind.speed + 'm/s'
+          this.weatherData.currentTemp =
+            Math.round(response.data.main.temp).toString() + '°'
+          this.weatherData.minTemp =
+            Math.round(response.data.main.temp_min).toString() + '°'
+          this.weatherData.maxTemp =
+            Math.round(response.data.main.temp_max).toString() + '°'
+          // this.weatherData.pressure = response.data.main.pressure
+          // this.weatherData.humidity = response.data.main.humidity + '%'
+          // this.weatherData.wind = response.data.wind.speed + 'm/s'
           this.weatherData.overcast = response.data.weather[0].description
-          this.weatherData.icon =
-            'images/' + response.data.weather[0].icon.slice(0, 2) + '.svg'
-          this.weatherData.sunrise = new Date(response.data.sys.sunrise * 1000)
-            .toLocaleTimeString('en-DE')
-            .slice(0, 4)
-          this.weatherData.sunset = new Date(response.data.sys.sunset * 1000)
-            .toLocaleTimeString('en-DE')
-            .slice(0, 4)
+          // this.weatherData.icon =
+          //   'images/' + response.data.weather[0].icon.slice(0, 2) + '.svg'
+          // this.weatherData.sunrise = new Date(response.data.sys.sunrise * 1000)
+          //   .toLocaleTimeString('en-DE')
+          //   .slice(0, 4)
+          // this.weatherData.sunset = new Date(response.data.sys.sunset * 1000)
+          //   .toLocaleTimeString('en-DE')
+          //   .slice(0, 4)
           this.weatherData.date = this.getDate(response.data.dt * 1000)
 
           //caching citys
@@ -112,10 +122,13 @@ export default {
             this.recentCitys.push(this.weatherData.city)
 
           this.$localForage.setItem('recentCitys', this.recentCitys)
+
+          this.overlay = false
         })
         .catch((error) => {
           this.textSnackbar = "Couldn't get data :("
           this.snackbar = true
+          this.overlay = false
         })
     },
     notify() {
@@ -207,6 +220,7 @@ export default {
   mounted() {
     this.populateAutocompleteFromCache()
     this.getGeoLocation()
+    this.overlay = true
   }
 }
 </script>
