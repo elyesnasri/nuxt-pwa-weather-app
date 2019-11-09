@@ -44,6 +44,7 @@ export default {
       snackbar: false,
       textSnackbar: '',
       city: '',
+      lastupdatedCity: '',
       search: '',
       selectedCity: '',
       appId: 'd944d4eb280d335ab5214b3dfae879c5',
@@ -166,8 +167,28 @@ export default {
       const lat = position.coords.latitude
       const long = position.coords.longitude
 
-      let url = `https://api.openweathermap.org/data/2.5/weather?units=metric&lat=${lat}&lon=${long}&APPID=${this.appId}`
-      this.getWeather(url)
+      axios
+        // .get(`https://geocode.xyz/${lat},${long}?json=1`)
+        .get(
+          `https://api.openweathermap.org/data/2.5/weather?units=metric&lat=${lat}&lon=${long}&APPID=${this.appId}`
+        )
+        .then((response) => {
+          // console.log(response)
+
+          // console.log('lat and long: ' + response.data.city)
+          this.city = response.data.name
+          this.lastupdatedCity = this.city
+
+          let url = `https://api.openweathermap.org/data/2.5/weather?q=${this.city}&units=metric&APPID=${this.appId}`
+          this.getWeather(url)
+        })
+        .catch((err) => {
+          console.log(err)
+          let url = `https://api.openweathermap.org/data/2.5/weather?q=${this.lastupdatedCity}&units=metric&APPID=${this.appId}`
+          this.getWeather(url)
+        })
+
+      // let url = `https://api.openweathermap.org/data/2.5/weather?units=metric&lat=${lat}&lon=${long}&APPID=${this.appId}`
     },
     geoError() {
       console.log(
