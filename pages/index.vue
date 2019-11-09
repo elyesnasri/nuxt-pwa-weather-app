@@ -44,7 +44,6 @@ export default {
       snackbar: false,
       textSnackbar: '',
       city: '',
-      lastupdatedCity: '',
       search: '',
       selectedCity: '',
       appId: 'd944d4eb280d335ab5214b3dfae879c5',
@@ -115,7 +114,7 @@ export default {
           this.$localForage.setItem('recentCitys', this.recentCitys)
         })
         .catch((error) => {
-          this.textSnackbar = 'Somthing went wrong :('
+          this.textSnackbar = "Couldn't get data :("
           this.snackbar = true
         })
     },
@@ -177,14 +176,16 @@ export default {
 
           // console.log('lat and long: ' + response.data.city)
           this.city = response.data.name
-          this.lastupdatedCity = this.city
 
           let url = `https://api.openweathermap.org/data/2.5/weather?q=${this.city}&units=metric&APPID=${this.appId}`
           this.getWeather(url)
         })
         .catch((err) => {
           console.log(err)
-          let url = `https://api.openweathermap.org/data/2.5/weather?q=${this.lastupdatedCity}&units=metric&APPID=${this.appId}`
+          let lastupdatedCity = this.recentCitys[0]
+          console.log('LastupdatedCity: ' + lastupdatedCity)
+
+          let url = `https://api.openweathermap.org/data/2.5/weather?q=${lastupdatedCity}&units=metric&APPID=${this.appId}`
           this.getWeather(url)
         })
 
@@ -206,16 +207,6 @@ export default {
   mounted() {
     this.populateAutocompleteFromCache()
     this.getGeoLocation()
-
-    this.$OneSignal.push(() => {
-      this.$OneSignal.isPushNotificationsEnabled((isEnabled) => {
-        if (isEnabled) {
-          console.log('Push notifications are enabled!')
-        } else {
-          console.log('Push notifications are not enabled yet.')
-        }
-      })
-    })
   }
 }
 </script>
