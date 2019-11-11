@@ -161,8 +161,8 @@ export default {
       }
     },
     getCoords(position) {
-      this.recentCoords.lat = position.recentCoords.latitude
-      this.recentCoords.long = position.recentCoords.longitude
+      this.recentCoords.lat = position.coords.latitude
+      this.recentCoords.long = position.coords.longitude
 
       //cache last geo position
       this.$localForage.setItem('recentCoords', this.recentCoords)
