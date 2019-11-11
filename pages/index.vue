@@ -67,7 +67,7 @@ export default {
       },
       dayTime: '',
       recentCitys: [],
-      coords: {
+      recentCoords: {
         lat: '',
         long: ''
       }
@@ -161,26 +161,28 @@ export default {
       }
     },
     getCoords(position) {
-      this.coords.lat = position.coords.latitude
-      this.coords.long = position.coords.longitude
+      this.recentCoords.lat = position.recentCoords.latitude
+      this.recentCoords.long = position.recentCoords.longitude
 
       //cache last geo position
-      if (this.coords.lat && this.coords.long) {
-        this.$localForage.setItem('recentCoords', this.coords)
-      } else {
-        this.recentCoords = this.$localForage.getItem('recentCoords')
-      }
+      this.$localForage.setItem('recentCoords', this.recentCoords)
 
-      console.log('lat: ' + this.coords.lat)
-      console.log('long: ' + this.coords.long)
-
-      let url = `https://api.openweathermap.org/data/2.5/weather?units=metric&lat=${this.coords.lat}&lon=${this.coords.long}&APPID=${this.appId}`
+      let url = `https://api.openweathermap.org/data/2.5/weather?units=metric&lat=${this.recentCoords.lat}&lon=${this.recentCoords.long}&APPID=${this.appId}`
       this.getWeather(url)
     },
     geoError() {
       console.log(
-        'Enable to get Coordinates. You can use your history to get weather data.'
+        'Your are not connected to internet. Getting Coordinates from cache...'
       )
+      //get geo coords from cache
+      this.recentCoords = this.$localForage.getItem('recentCoords')
+
+      if (this.recentCoords.lat && this.recentCoords.long) {
+        let url = `https://api.openweathermap.org/data/2.5/weather?units=metric&lat=${this.recentCoords.lat}&lon=${this.recentCoords.long}&APPID=${this.appId}`
+        this.getWeather(url)
+      }
+      console.log('lat: ' + this.recentCoords.lat)
+      console.log('long: ' + this.recentCoords.long)
     },
     async populateAutocompleteFromCache() {
       let recentCitys = await this.$localForage.getItem('recentCitys')
