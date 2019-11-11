@@ -2,7 +2,7 @@
   <v-layout column justify-center align-center>
     <v-flex xs12>
       <v-col cols="12">
-        <v-sheet v-if="$nuxt.isOffline" color="orange lighten-2">You are offline</v-sheet>
+        <!-- <v-sheet v-if="$nuxt.isOffline" color="orange lighten-2">You are offline</v-sheet> -->
         <v-form @submit.prevent="getCityInput">
           <v-autocomplete
             :search-input.sync="search"
@@ -182,19 +182,19 @@ export default {
       console.log(
         'Your are not connected to internet. Getting Coordinates from cache...'
       )
-      //get geo coords from cache
-      this.recentCoords = this.$localForage.getItem('recentCoords')
+      // //get geo coords from cache
+      // this.recentCoords = this.$localForage.getItem('recentCoords')
 
-      this.textSnackbar = `[geoError:] lat: ${this.recentCoords.lat} long: ${this.recentCoords.long}}`
-      this.snackbar = true
+      // this.textSnackbar = `[geoError:] lat: ${this.recentCoords.lat} long: ${this.recentCoords.long}}`
+      // this.snackbar = true
 
-      if (this.recentCoords.lat && this.recentCoords.long) {
-        let url = `https://api.openweathermap.org/data/2.5/weather?units=metric&lat=${this.recentCoords.lat}&lon=${this.recentCoords.long}&APPID=${this.appId}`
-        this.getWeather(url)
-      }
-      console.log('[geoError]')
-      console.log('lat: ' + this.recentCoords.lat)
-      console.log('long: ' + this.recentCoords.long)
+      // if (this.recentCoords.lat && this.recentCoords.long) {
+      //   let url = `https://api.openweathermap.org/data/2.5/weather?units=metric&lat=${this.recentCoords.lat}&lon=${this.recentCoords.long}&APPID=${this.appId}`
+      //   this.getWeather(url)
+      // }
+      // console.log('[geoError]')
+      // console.log('lat: ' + this.recentCoords.lat)
+      // console.log('long: ' + this.recentCoords.long)
     },
     async populateAutocompleteFromCache() {
       let recentCitys = await this.$localForage.getItem('recentCitys')
