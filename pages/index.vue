@@ -120,8 +120,19 @@ export default {
           this.overlay = false
         })
         .catch((error) => {
-          this.textSnackbar = "Couldn't get data :("
-          this.snackbar = true
+          if ($nuxt.isOffline) {
+            this.textSnackbar = 'No internet connection!'
+            this.snackbar = true
+          } else {
+            let url = `https://api.openweathermap.org/data/2.5/weather?q=${
+              this.recentCitys[0]
+            }&units=metric&APPID=${this.appId}`
+            this.getWeather(url)
+            this.textSnackbar = `Serving from cache: last city: ${
+              this.recentCitys[0]
+            }`
+            this.snackbar = true
+          }
           this.overlay = false
         })
     },
