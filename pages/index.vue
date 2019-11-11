@@ -71,7 +71,8 @@ export default {
       recentCoords: {
         lat: '',
         long: ''
-      }
+      },
+      lastLocatedCity: ''
     }
   },
   watch: {
@@ -116,6 +117,7 @@ export default {
             this.recentCitys.push(this.weatherData.city)
 
           this.$localForage.setItem('recentCitys', this.recentCitys)
+          this.lastLocatedCity = response.data.name
 
           this.overlay = false
         })
@@ -168,13 +170,9 @@ export default {
     },
     getCoords(position) {
       if ($nuxt.isOffline) {
-        let url = `https://api.openweathermap.org/data/2.5/weather?q=${
-          this.recentCitys[0]
-        }&units=metric&APPID=${this.appId}`
+        let url = `https://api.openweathermap.org/data/2.5/weather?q=${this.lastLocatedCity}&units=metric&APPID=${this.appId}`
         this.getWeather(url)
-        this.textSnackbar = `Serving from cache: last city: ${
-          this.recentCitys[0]
-        }`
+        this.textSnackbar = `Serving from cache: last city: ${this.lastLocatedCity}`
         this.snackbar = true
       } else {
         this.recentCoords.lat = position.coords.latitude
@@ -222,7 +220,14 @@ export default {
   },
   mounted() {
     this.populateAutocompleteFromCache()
-    this.getGeoLocation()
+    if ($nuxt.isOffline) {
+      console.log('app is offline')
+      let url = `https://api.openweathermap.org/data/2.5/weather?q=${this.lastLocatedCity}&units=metric&APPID=${this.appId}`
+      this.getWeather(url)
+    } else {
+      console.log('app is online')
+      this.getGeoLocation()
+    }
     this.overlay = true
   }
 }
