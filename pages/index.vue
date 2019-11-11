@@ -2,7 +2,7 @@
   <v-layout column justify-center align-center>
     <v-flex xs12>
       <v-col cols="12">
-        <div v-if="$nuxt.isOffline">You are offline</div>
+        <v-sheet v-if="$nuxt.isOffline" color="orange lighten-2">You are offline</v-sheet>
         <v-form @submit.prevent="getCityInput">
           <v-autocomplete
             :search-input.sync="search"
