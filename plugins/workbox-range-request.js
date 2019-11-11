@@ -5,7 +5,7 @@ workbox.routing.registerRoute(
   new RegExp('^https://api.openweathermap.org/data/2.5/weather'),
   new workbox.strategies.NetworkFirst({
     // serve from cache if the network request is taking too long.
-    networkTimeoutSeconds: 3,
+    // networkTimeoutSeconds: 3,
 
     cacheName: 'api-cache',
     plugins: [

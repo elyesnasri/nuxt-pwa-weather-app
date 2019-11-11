@@ -2,6 +2,7 @@
   <v-layout column justify-center align-center>
     <v-flex xs12>
       <v-col cols="12">
+        <div v-if="$nuxt.isOffline">You are offline</div>
         <v-form @submit.prevent="getCityInput">
           <v-autocomplete
             :search-input.sync="search"
@@ -164,6 +165,13 @@ export default {
       this.recentCoords.lat = position.coords.latitude
       this.recentCoords.long = position.coords.longitude
 
+      console.log('[getCoords]')
+      console.log('lat: ' + this.recentCoords.lat)
+      console.log('long: ' + this.recentCoords.long)
+
+      this.textSnackbar = `[getCoords:] lat: ${this.recentCoords.lat} long: ${this.recentCoords.long}}`
+      this.snackbar = true
+
       //cache last geo position
       this.$localForage.setItem('recentCoords', this.recentCoords)
 
@@ -177,10 +185,14 @@ export default {
       //get geo coords from cache
       this.recentCoords = this.$localForage.getItem('recentCoords')
 
+      this.textSnackbar = `[geoError:] lat: ${this.recentCoords.lat} long: ${this.recentCoords.long}}`
+      this.snackbar = true
+
       if (this.recentCoords.lat && this.recentCoords.long) {
         let url = `https://api.openweathermap.org/data/2.5/weather?units=metric&lat=${this.recentCoords.lat}&lon=${this.recentCoords.long}&APPID=${this.appId}`
         this.getWeather(url)
       }
+      console.log('[geoError]')
       console.log('lat: ' + this.recentCoords.lat)
       console.log('long: ' + this.recentCoords.long)
     },
