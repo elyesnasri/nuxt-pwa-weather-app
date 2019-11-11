@@ -124,13 +124,7 @@ export default {
             this.textSnackbar = 'No internet connection!'
             this.snackbar = true
           } else {
-            let url = `https://api.openweathermap.org/data/2.5/weather?q=${
-              this.recentCitys[0]
-            }&units=metric&APPID=${this.appId}`
-            this.getWeather(url)
-            this.textSnackbar = `Serving from cache: last city: ${
-              this.recentCitys[0]
-            }`
+            this.textSnackbar = 'Bad request!'
             this.snackbar = true
           }
           this.overlay = false
@@ -173,21 +167,32 @@ export default {
       }
     },
     getCoords(position) {
-      this.recentCoords.lat = position.coords.latitude
-      this.recentCoords.long = position.coords.longitude
+      if ($nuxt.isOffline) {
+        let url = `https://api.openweathermap.org/data/2.5/weather?q=${
+          this.recentCitys[0]
+        }&units=metric&APPID=${this.appId}`
+        this.getWeather(url)
+        this.textSnackbar = `Serving from cache: last city: ${
+          this.recentCitys[0]
+        }`
+        this.snackbar = true
+      } else {
+        this.recentCoords.lat = position.coords.latitude
+        this.recentCoords.long = position.coords.longitude
 
-      console.log('[getCoords]')
-      console.log('lat: ' + this.recentCoords.lat)
-      console.log('long: ' + this.recentCoords.long)
+        console.log('[getCoords]')
+        console.log('lat: ' + this.recentCoords.lat)
+        console.log('long: ' + this.recentCoords.long)
 
-      this.textSnackbar = `[getCoords:] lat: ${this.recentCoords.lat} long: ${this.recentCoords.long}}`
-      this.snackbar = true
+        this.textSnackbar = `[getCoords:] lat: ${this.recentCoords.lat} long: ${this.recentCoords.long}}`
+        this.snackbar = true
 
-      //cache last geo position
-      this.$localForage.setItem('recentCoords', this.recentCoords)
+        //cache last geo position
+        this.$localForage.setItem('recentCoords', this.recentCoords)
 
-      let url = `https://api.openweathermap.org/data/2.5/weather?units=metric&lat=${this.recentCoords.lat}&lon=${this.recentCoords.long}&APPID=${this.appId}`
-      this.getWeather(url)
+        let url = `https://api.openweathermap.org/data/2.5/weather?units=metric&lat=${this.recentCoords.lat}&lon=${this.recentCoords.long}&APPID=${this.appId}`
+        this.getWeather(url)
+      }
     },
     geoError() {
       console.log(
