@@ -181,7 +181,7 @@ export default {
 
       //get city's name via geo coords
       let urlCoords = `https://api.openweathermap.org/data/2.5/weather?units=metric&lat=${lat}&lon=${long}&APPID=${this.appId}`
-      this.lastLocatedCity = getCityName(urlCoords)
+      this.lastLocatedCity = this.getCityName(urlCoords)
 
       //cache last located city
       this.$localForage.setItem('lastLocatedCity', this.lastLocatedCity)
