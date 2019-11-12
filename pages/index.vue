@@ -2,7 +2,6 @@
   <v-layout column justify-center align-center>
     <v-flex xs12>
       <v-col cols="12">
-        <!-- <v-sheet v-if="$nuxt.isOffline" color="orange lighten-2">You are offline</v-sheet> -->
         <v-form @submit.prevent="getCityInput">
           <v-autocomplete
             :search-input.sync="search"
@@ -50,7 +49,6 @@ export default {
       textSnackbar: '',
       city: '',
       search: '',
-      selectedCity: '',
       appId: 'd944d4eb280d335ab5214b3dfae879c5',
       weatherData: {
         city: '',
@@ -71,8 +69,7 @@ export default {
       recentCoords: {
         lat: '',
         long: ''
-      },
-      lastLocatedCity: ''
+      }
     }
   },
   watch: {
@@ -85,15 +82,12 @@ export default {
   },
   methods: {
     getCityInput() {
-      console.log('search input: ' + this.search)
-
       if (this.search) {
         let url = `https://api.openweathermap.org/data/2.5/weather?q=${this.search}&units=metric&APPID=${this.appId}`
         this.getWeather(url)
       }
     },
     getChanged(city) {
-      console.log('changed city: ' + city)
       this.search = city
       this.getCityInput()
     },
@@ -117,17 +111,20 @@ export default {
             this.recentCitys.push(this.weatherData.city)
 
           this.$localForage.setItem('recentCitys', this.recentCitys)
-          this.lastLocatedCity = response.data.name
 
-          this.overlay = false
+          // this.overlay = false //TODO: check if required
         })
         .catch((error) => {
           if ($nuxt.isOffline) {
-            console.log('No internet connection!')
+            this.textSnackbar =
+              'Your are offline! Turn your internet on to get the last data &#128540;' +
+              String.fromCodePoint(0x1f605)
+            this.snackbar = true
           } else {
-            console.log('No data found!')
+            this.textSnackbar =
+              "Can't find data " + String.fromCodePoint(0x1f97a)
+            this.snackbar = true
           }
-          this.overlay = false
         })
     },
     notify() {
@@ -169,35 +166,12 @@ export default {
     async getCoords(position) {
       let lat = position.coords.latitude
       let long = position.coords.longitude
-
-      console.log('[getCoords]')
-      console.log('lat: ' + lat)
-      console.log('long: ' + long)
-
-      this.textSnackbar = `[getCoords:] lat: ${lat} long: ${long}}`
-      this.snackbar = true
-
-      // testing coord offline
       let url = `https://api.openweathermap.org/data/2.5/weather?units=metric&lat=${lat}&lon=${long}&APPID=${this.appId}`
+
       this.recentCoords.lat = lat
       this.recentCoords.long = long
       this.$localForage.setItem('recentCoords', this.recentCoords)
       this.getWeather(url)
-      // End testing coord offline
-
-      //get city's name via geo coords
-      // let urlCoords = `https://api.openweathermap.org/data/2.5/weather?units=metric&lat=${lat}&lon=${long}&APPID=${this.appId}`
-      // this.lastLocatedCity = await this.getCityName(urlCoords)
-
-      //cache last located city
-      // this.$localForage.setItem('lastLocatedCity', this.lastLocatedCity)
-
-      // this.textSnackbar = `[lasLocatedCity:] ${this.lastLocatedCity}`
-      // this.snackbar = true
-
-      // get weather data via city's name
-      // let url = `https://api.openweathermap.org/data/2.5/weather?q=${this.lastLocatedCity}&units=metric&APPID=${this.appId}`
-      // this.getWeather(url)
     },
     geoError() {
       console.log("Can't get geo Coordinates!")
@@ -228,28 +202,26 @@ export default {
   },
   async mounted() {
     this.populateAutocompleteFromCache()
+
     if ($nuxt.isOffline) {
       console.log('Offline')
+
       this.recentCoords = await this.$localForage.getItem('recentCoords')
       if (this.recentCoords) {
         let url = `https://api.openweathermap.org/data/2.5/weather?units=metric&lat=${this.recentCoords.lat}&lon=${this.recentCoords.long}&APPID=${this.appId}`
         this.getWeather(url)
+
+        this.textSnackbar =
+          'GREAT! Your are getting data from cache ' +
+          String.fromCodePoint(0x1f60d)
+
+        this.snackbar = true
       } else {
-        this.textSnackbar = 'Your are Offline! Try to use your history.'
+        this.textSnackbar =
+          'Please go online to get some data ' + String.fromCodePoint(0x1f913)
         this.snackbar = true
       }
-      // this.lastLocatedCity = await this.$localForage.getItem('lastLocatedCity')
-      // if (this.lastLocatedCity) {
-      //   let url = `https://api.openweathermap.org/data/2.5/weather?q=${this.lastLocatedCity}&units=metric&APPID=${this.appId}`
-      //   this.getWeather(url)
-      // } else {
-      //   this.textSnackbar = 'Your are Offline! Try to use your history.'
-      //   this.snackbar = true
-      // }
     } else {
-      // this.textSnackbar = 'Online'
-      // this.snackbar = true
-      // get geolocation
       console.log('Online')
 
       this.getGeoLocation()
