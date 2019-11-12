@@ -168,7 +168,7 @@ export default {
         navigator.geolocation.getCurrentPosition(this.getCoords, this.geoError)
       }
     },
-    getCoords(position) {
+    async getCoords(position) {
       let lat = position.coords.latitude
       let long = position.coords.longitude
 
@@ -181,7 +181,7 @@ export default {
 
       //get city's name via geo coords
       let urlCoords = `https://api.openweathermap.org/data/2.5/weather?units=metric&lat=${lat}&lon=${long}&APPID=${this.appId}`
-      this.lastLocatedCity = this.getCityName(urlCoords)
+      this.lastLocatedCity = await this.getCityName(urlCoords)
 
       //cache last located city
       this.$localForage.setItem('lastLocatedCity', this.lastLocatedCity)
@@ -203,16 +203,20 @@ export default {
         this.recentCitys.push(recentCitys[city])
       }
     },
-    getCityName(url) {
+    async getCityName(url) {
       let cityName
-      axios
+      await axios
         .get(url)
         .then((response) => {
+          console.log(response)
+
           cityName = response.data.name
         })
         .catch((err) => {
           console.log(err)
         })
+      console.log('cityName:' + cityName)
+
       return cityName
     }
   },
