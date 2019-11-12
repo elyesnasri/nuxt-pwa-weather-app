@@ -186,7 +186,7 @@ export default {
       //cache last located city
       this.$localForage.setItem('lastLocatedCity', this.lastLocatedCity)
 
-      this.textSnackbar = `[lasLocatedCity:] ${lastLocatedCity}`
+      this.textSnackbar = `[lasLocatedCity:] ${this.lastLocatedCity}`
       this.snackbar = true
 
       // get weather data via city's name
