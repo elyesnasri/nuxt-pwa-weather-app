@@ -177,19 +177,27 @@ export default {
       this.textSnackbar = `[getCoords:] lat: ${lat} long: ${long}}`
       this.snackbar = true
 
+      // testing coord offline
+      let url = `https://api.openweathermap.org/data/2.5/weather?units=metric&lat=${lat}&lon=${long}&APPID=${this.appId}`
+      this.recentCoords.lat = lat
+      this.recentCoords.long = long
+      this.$localForage.setItem('recentCoords', this.recentCoords)
+      this.getWeather(url)
+      // End testing coord offline
+
       //get city's name via geo coords
-      let urlCoords = `https://api.openweathermap.org/data/2.5/weather?units=metric&lat=${lat}&lon=${long}&APPID=${this.appId}`
-      this.lastLocatedCity = await this.getCityName(urlCoords)
+      // let urlCoords = `https://api.openweathermap.org/data/2.5/weather?units=metric&lat=${lat}&lon=${long}&APPID=${this.appId}`
+      // this.lastLocatedCity = await this.getCityName(urlCoords)
 
       //cache last located city
-      this.$localForage.setItem('lastLocatedCity', this.lastLocatedCity)
+      // this.$localForage.setItem('lastLocatedCity', this.lastLocatedCity)
 
-      this.textSnackbar = `[lasLocatedCity:] ${this.lastLocatedCity}`
-      this.snackbar = true
+      // this.textSnackbar = `[lasLocatedCity:] ${this.lastLocatedCity}`
+      // this.snackbar = true
 
       // get weather data via city's name
-      let url = `https://api.openweathermap.org/data/2.5/weather?q=${this.lastLocatedCity}&units=metric&APPID=${this.appId}`
-      this.getWeather(url)
+      // let url = `https://api.openweathermap.org/data/2.5/weather?q=${this.lastLocatedCity}&units=metric&APPID=${this.appId}`
+      // this.getWeather(url)
     },
     geoError() {
       console.log("Can't get geo Coordinates!")
@@ -222,14 +230,22 @@ export default {
     this.populateAutocompleteFromCache()
     if ($nuxt.isOffline) {
       console.log('Offline')
-      this.lastLocatedCity = await this.$localForage.getItem('lastLocatedCity')
-      if (this.lastLocatedCity) {
-        let url = `https://api.openweathermap.org/data/2.5/weather?q=${this.lastLocatedCity}&units=metric&APPID=${this.appId}`
+      this.recentCoords = await this.$localForage.getItem('recentCoords')
+      if (this.recentCoords) {
+        let url = `https://api.openweathermap.org/data/2.5/weather?units=metric&lat=${this.recentCoords.lat}&lon=${this.recentCoords.long}&APPID=${this.appId}`
         this.getWeather(url)
       } else {
         this.textSnackbar = 'Your are Offline! Try to use your history.'
         this.snackbar = true
       }
+      // this.lastLocatedCity = await this.$localForage.getItem('lastLocatedCity')
+      // if (this.lastLocatedCity) {
+      //   let url = `https://api.openweathermap.org/data/2.5/weather?q=${this.lastLocatedCity}&units=metric&APPID=${this.appId}`
+      //   this.getWeather(url)
+      // } else {
+      //   this.textSnackbar = 'Your are Offline! Try to use your history.'
+      //   this.snackbar = true
+      // }
     } else {
       // this.textSnackbar = 'Online'
       // this.snackbar = true
