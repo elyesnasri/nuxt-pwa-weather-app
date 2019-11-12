@@ -221,14 +221,18 @@ export default {
   mounted() {
     this.populateAutocompleteFromCache()
     if ($nuxt.isOffline) {
-      console.log('app is offline')
-      let url = `https://api.openweathermap.org/data/2.5/weather?q=${this.lastLocatedCity}&units=metric&APPID=${this.appId}`
-      this.getWeather(url)
+      // console.log('app is offline')
+      // let url = `https://api.openweathermap.org/data/2.5/weather?q=${this.lastLocatedCity}&units=metric&APPID=${this.appId}`
+      // this.getWeather(url)
+      this.textSnackbar = 'Offline'
+      this.snackbar = true
     } else {
-      console.log('app is online')
-      this.getGeoLocation()
+      // console.log('app is online')
+      // this.getGeoLocation()
+      this.textSnackbar = 'Online'
+      this.snackbar = true
     }
-    this.overlay = true
+    // this.overlay = true
   }
 }
 </script>
