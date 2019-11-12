@@ -123,11 +123,9 @@ export default {
         })
         .catch((error) => {
           if ($nuxt.isOffline) {
-            this.textSnackbar = 'No internet connection!'
-            this.snackbar = true
+            console.log('No internet connection!')
           } else {
-            this.textSnackbar = 'Bad request!'
-            this.snackbar = true
+            console.log('No data found!')
           }
           this.overlay = false
         })
@@ -220,17 +218,24 @@ export default {
       return cityName
     }
   },
-  mounted() {
+  async mounted() {
     this.populateAutocompleteFromCache()
     if ($nuxt.isOffline) {
-      this.textSnackbar = 'Offline'
-      this.snackbar = true
-      let url = `https://api.openweathermap.org/data/2.5/weather?q=${this.lastLocatedCity}&units=metric&APPID=${this.appId}`
-      this.getWeather(url)
+      console.log('Offline')
+      this.lastLocatedCity = await this.$localForage.getItem('lastLocatedCity')
+      if (this.lastLocatedCity) {
+        let url = `https://api.openweathermap.org/data/2.5/weather?q=${this.lastLocatedCity}&units=metric&APPID=${this.appId}`
+        this.getWeather(url)
+      } else {
+        this.textSnackbar = 'Your are Offline! Try to use your history.'
+        this.snackbar = true
+      }
     } else {
-      this.textSnackbar = 'Online'
-      this.snackbar = true
+      // this.textSnackbar = 'Online'
+      // this.snackbar = true
       // get geolocation
+      console.log('Online')
+
       this.getGeoLocation()
     }
     this.overlay = true
