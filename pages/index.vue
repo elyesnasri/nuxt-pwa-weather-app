@@ -169,46 +169,32 @@ export default {
       }
     },
     getCoords(position) {
-      if ($nuxt.isOffline) {
-        let url = `https://api.openweathermap.org/data/2.5/weather?q=${this.lastLocatedCity}&units=metric&APPID=${this.appId}`
-        this.getWeather(url)
-        this.textSnackbar = `Serving from cache: last city: ${this.lastLocatedCity}`
-        this.snackbar = true
-      } else {
-        this.recentCoords.lat = position.coords.latitude
-        this.recentCoords.long = position.coords.longitude
+      let lat = position.coords.latitude
+      let long = position.coords.longitude
 
-        console.log('[getCoords]')
-        console.log('lat: ' + this.recentCoords.lat)
-        console.log('long: ' + this.recentCoords.long)
+      console.log('[getCoords]')
+      console.log('lat: ' + lat)
+      console.log('long: ' + long)
 
-        this.textSnackbar = `[getCoords:] lat: ${this.recentCoords.lat} long: ${this.recentCoords.long}}`
-        this.snackbar = true
+      this.textSnackbar = `[getCoords:] lat: ${lat} long: ${long}}`
+      this.snackbar = true
 
-        //cache last geo position
-        this.$localForage.setItem('recentCoords', this.recentCoords)
+      //get city's name via geo coords
+      let urlCoords = `https://api.openweathermap.org/data/2.5/weather?units=metric&lat=${lat}&lon=${long}&APPID=${this.appId}`
+      this.lastLocatedCity = getCityName(urlCoords)
 
-        let url = `https://api.openweathermap.org/data/2.5/weather?units=metric&lat=${this.recentCoords.lat}&lon=${this.recentCoords.long}&APPID=${this.appId}`
-        this.getWeather(url)
-      }
+      //cache last located city
+      this.$localForage.setItem('lastLocatedCity', this.lastLocatedCity)
+
+      this.textSnackbar = `[lasLocatedCity:] ${lastLocatedCity}`
+      this.snackbar = true
+
+      // get weather data via city's name
+      let url = `https://api.openweathermap.org/data/2.5/weather?q=${this.lastLocatedCity}&units=metric&APPID=${this.appId}`
+      this.getWeather(url)
     },
     geoError() {
-      console.log(
-        'Your are not connected to internet. Getting Coordinates from cache...'
-      )
-      // //get geo coords from cache
-      // this.recentCoords = this.$localForage.getItem('recentCoords')
-
-      // this.textSnackbar = `[geoError:] lat: ${this.recentCoords.lat} long: ${this.recentCoords.long}}`
-      // this.snackbar = true
-
-      // if (this.recentCoords.lat && this.recentCoords.long) {
-      //   let url = `https://api.openweathermap.org/data/2.5/weather?units=metric&lat=${this.recentCoords.lat}&lon=${this.recentCoords.long}&APPID=${this.appId}`
-      //   this.getWeather(url)
-      // }
-      // console.log('[geoError]')
-      // console.log('lat: ' + this.recentCoords.lat)
-      // console.log('long: ' + this.recentCoords.long)
+      console.log("Can't get geo Coordinates!")
     },
     async populateAutocompleteFromCache() {
       let recentCitys = await this.$localForage.getItem('recentCitys')
@@ -216,23 +202,34 @@ export default {
       for (let city in recentCitys) {
         this.recentCitys.push(recentCitys[city])
       }
+    },
+    getCityName(url) {
+      let cityName
+      axios
+        .get(url)
+        .then((response) => {
+          cityName = response.data.name
+        })
+        .catch((err) => {
+          console.log(err)
+        })
+      return cityName
     }
   },
   mounted() {
     this.populateAutocompleteFromCache()
     if ($nuxt.isOffline) {
-      // console.log('app is offline')
-      // let url = `https://api.openweathermap.org/data/2.5/weather?q=${this.lastLocatedCity}&units=metric&APPID=${this.appId}`
-      // this.getWeather(url)
       this.textSnackbar = 'Offline'
       this.snackbar = true
+      let url = `https://api.openweathermap.org/data/2.5/weather?q=${this.lastLocatedCity}&units=metric&APPID=${this.appId}`
+      this.getWeather(url)
     } else {
-      // console.log('app is online')
-      // this.getGeoLocation()
       this.textSnackbar = 'Online'
       this.snackbar = true
+      // get geolocation
+      this.getGeoLocation()
     }
-    // this.overlay = true
+    this.overlay = true
   }
 }
 </script>
