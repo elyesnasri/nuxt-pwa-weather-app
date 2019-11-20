@@ -159,10 +159,15 @@ export default {
           body: 'you will get the last weather updates',
           vibrate: [200, 100, 200]
         }
-        var notification = new Notification(
-          'Progressive Weather says: ',
-          options
-        )
+        if (navigator.userAgent.indexOf('Chrome') != -1) {
+          if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.ready.then((swreg) => {
+              swreg.showNotification('Weather App', options)
+            })
+          }
+        } else if (navigator.userAgent.indexOf('Safari') != -1) {
+          var notification = new Notification('Weather App', options)
+        }
       }
     },
     getDate(dateServer) {
