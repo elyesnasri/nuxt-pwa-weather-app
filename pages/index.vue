@@ -142,6 +142,7 @@ export default {
           })
         } else {
           throw error
+          this.textSnackbar = 'Notification not Supported'
         }
       }
     },
@@ -263,7 +264,7 @@ export default {
         try {
           registration.periodicSync.register('weather-sync', {
             // An interval of one hour.
-            minInterval: 60 * 60 * 1000
+            minInterval: 60 * 60
           })
           console.log('weather-sync is registered')
         } catch (error) {

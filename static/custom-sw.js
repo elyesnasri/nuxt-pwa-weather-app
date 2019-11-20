@@ -2,39 +2,22 @@ console.log('Custom Service worker!')
 
 self.addEventListener('periodicsync', (event) => {
   if (event.tag === 'weather-sync') {
-    // See the "Think before you sync" section for
-    // checks you could perform before syncing.
-    event.waitUntil(syncContent())
-
-    var title = 'Weather Update'
-    const options = {
-      body: 'There is some new weather updates.'
-    }
     event.waitUntil(
-      // self.registration.showNotification(title, {
-      //   body: body
-      // })
-      // displayNotification()
-      self.registration.showNotification(title, options)
+      syncContent()
+        .then(function() {
+          var title = 'Weather Update'
+          var options = {
+            body: 'Weather data are up to date',
+            vibrate: [200, 100, 200]
+          }
+          self.registration.showNotification(title, options)
+        })
+        .catch((err) => {
+          console.log('cannt update data')
+        })
     )
   }
-  // Other logic for different tags as needed.
 })
-
-async function displayNotification() {
-  Notification.requestPermission().then(function(result) {
-    console.log(result)
-    if (result === 'granted') {
-      var options = {
-        body: 'Weather data are up to date',
-        vibrate: [200, 100, 200]
-      }
-      navigator.serviceWorker.getRegistration().then(function(reg) {
-        reg.showNotification('Weather Update', options)
-      })
-    }
-  })
-}
 
 async function syncContent() {
   let search = 'Munich'
