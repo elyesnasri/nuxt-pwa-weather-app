@@ -5,11 +5,29 @@ self.addEventListener('periodicsync', (event) => {
     // See the "Think before you sync" section for
     // checks you could perform before syncing.
     event.waitUntil(syncContent())
+
+    var title = 'Weather Update'
+    var body = 'There is some new weather updatesss'
+    event.waitUntil(
+      self.registration.showNotification(title, {
+        body: body
+      })
+    )
   }
   // Other logic for different tags as needed.
 })
 
-function syncContent() {
-  let a = 10
-  console.log('updating in background')
+async function syncContent() {
+  let search = 'Munich'
+  let appId = 'd944d4eb280d335ab5214b3dfae879c5'
+
+  console.log('Updating data...')
+  let url = `https://api.openweathermap.org/data/2.5/weather?q=${search}&units=metric&APPID=${appId}`
+
+  const response = await fetch(url)
+  const myJson = await response.json()
+  console.log(JSON.stringify(myJson))
+  //TODO try to get workbox to cach the request
+
+  // send get request for all cached city to update the cache (workbox will update it)
 }

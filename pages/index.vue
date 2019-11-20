@@ -81,6 +81,9 @@ export default {
     }
   },
   methods: {
+    synContent() {
+      console.log('Updating data...')
+    },
     getCityInput() {
       if (this.search) {
         let url = `https://api.openweathermap.org/data/2.5/weather?q=${this.search}&units=metric&APPID=${this.appId}`
@@ -240,8 +243,8 @@ export default {
       if ('periodicSync' in registration) {
         try {
           registration.periodicSync.register('weather-sync', {
-            // An interval of one day.
-            minInterval: 24 * 60 * 60 * 1000
+            // An interval of one hour.
+            minInterval: 60 * 60 * 1000
           })
           console.log('weather-sync is registered')
         } catch (error) {
