@@ -268,8 +268,8 @@ export default {
       if ('periodicSync' in registration) {
         try {
           registration.periodicSync.register('weather-sync', {
-            // An interval of one hour.
-            minInterval: 60 * 60
+            // Minimum interval at which the sync may fire (one day).
+            minInterval: 24 * 60 * 60 * 1000
           })
           console.log('weather-sync is registered')
         } catch (error) {
