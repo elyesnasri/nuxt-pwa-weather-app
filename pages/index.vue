@@ -227,6 +227,18 @@ export default {
       this.getGeoLocation()
     }
     this.overlay = true
+
+    //PBS
+    const status = await navigator.permissions.query({
+      name: 'periodic-background-sync'
+    })
+    if (status.state === 'granted') {
+      // PBS can be used.
+      console.log('PBS can be used')
+    } else {
+      // PBS cannot be used.
+      console.log('PBS cannot be used')
+    }
   }
 }
 </script>
