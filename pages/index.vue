@@ -81,9 +81,6 @@ export default {
     }
   },
   methods: {
-    synContent() {
-      console.log('Updating data...')
-    },
     getCityInput() {
       if (this.search) {
         let url = `https://api.openweathermap.org/data/2.5/weather?q=${this.search}&units=metric&APPID=${this.appId}`
@@ -133,8 +130,14 @@ export default {
     notify() {
       if ('Notification' in window) {
         Notification.requestPermission().then(function(result) {
+          this.snackbar = true
+          this.textSnackbar = 'Nofication suppoerted: ' + result
+
           console.log(result)
           if (result === 'granted') {
+            this.textSnackbar = 'Nofication accepted'
+            this.snackbar = true
+
             var options = {
               body: 'Do you like my body?',
               vibrate: [200, 100, 200]
@@ -145,6 +148,9 @@ export default {
             )
           }
         })
+      } else {
+        this.textSnackbar = 'Notfication not supported'
+        this.snackbar = true
       }
     },
     getDate(dateServer) {
@@ -238,6 +244,8 @@ export default {
     if (status.state === 'granted') {
       // PBS can be used.
       console.log('PBS can be used')
+      this.textSnackbar = 'PBS can be used'
+      this.snackbar = true
       // registering for PBS
       const registration = await navigator.serviceWorker.ready
       if ('periodicSync' in registration) {
@@ -255,6 +263,8 @@ export default {
     } else {
       // PBS cannot be used.
       console.log('PBS cannot be used')
+      this.textSnackbar = 'PBS cannot be used'
+      this.snackbar = true
     }
   }
 }
