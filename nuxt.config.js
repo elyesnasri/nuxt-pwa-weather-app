@@ -15,6 +15,11 @@ export default {
         hid: 'description',
         name: 'description',
         content: process.env.npm_package_description || ''
+      },
+      {
+        'http-equiv': 'origin-trial',
+        content:
+          'AoSf+6UJeKykwgPsRo0fusjoqlCoj+J/2CROiTadTkiSp1QTrDPY2HtBo0IOmBMjIP1+j8mcHwJmA7StEqnxgw8AAABxeyJvcmlnaW4iOiJodHRwczovL2ZlcnZlbnQtaG9wcGVyLWM0NTg1ZS5uZXRsaWZ5LmNvbTo0NDMiLCJmZWF0dXJlIjoiUGVyaW9kaWNCYWNrZ3JvdW5kU3luYyIsImV4cGlyeSI6MTU3Nzg4MzAxNH0='
       }
     ],
     link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }]
