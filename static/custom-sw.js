@@ -7,34 +7,33 @@ self.addEventListener('periodicsync', (event) => {
     event.waitUntil(syncContent())
 
     var title = 'Weather Update'
-    var body = 'There is some new weather updatesss'
+    const options = {
+      body: 'There is some new weather updates.'
+    }
     event.waitUntil(
       // self.registration.showNotification(title, {
       //   body: body
       // })
-      displayNotification()
+      // displayNotification()
+      self.registration.showNotification(title, options)
     )
   }
   // Other logic for different tags as needed.
 })
 
 async function displayNotification() {
-  if ('Notification' in window) {
-    Notification.requestPermission().then(function(result) {
-      console.log(result)
-      if (result === 'granted') {
-        var options = {
-          body: 'Weather data are up to date',
-          vibrate: [200, 100, 200]
-        }
-        navigator.serviceWorker.getRegistration().then(function(reg) {
-          reg.showNotification('Weather Update', options)
-        })
+  Notification.requestPermission().then(function(result) {
+    console.log(result)
+    if (result === 'granted') {
+      var options = {
+        body: 'Weather data are up to date',
+        vibrate: [200, 100, 200]
       }
-    })
-  } else {
-    console.log('Notification not supported')
-  }
+      navigator.serviceWorker.getRegistration().then(function(reg) {
+        reg.showNotification('Weather Update', options)
+      })
+    }
+  })
 }
 
 async function syncContent() {

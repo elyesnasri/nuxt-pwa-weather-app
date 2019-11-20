@@ -128,18 +128,19 @@ export default {
         })
     },
     notify() {
+      let that = this
       if ('Notification' in window) {
         Notification.requestPermission().then(function(result) {
-          this.snackbar = true
-          this.textSnackbar = 'Nofication suppoerted: ' + result
+          that.textSnackbar = 'Nofication suppoerted: ' + result
+          that.snackbar = true
 
           console.log(result)
           if (result === 'granted') {
-            this.textSnackbar = 'Nofication accepted'
-            this.snackbar = true
+            that.textSnackbar = 'Nofication accepted'
+            that.snackbar = true
 
             var options = {
-              body: 'Do you like my body?',
+              body: 'you will get the last weather updates',
               vibrate: [200, 100, 200]
             }
             var notification = new Notification(
@@ -149,8 +150,8 @@ export default {
           }
         })
       } else {
-        this.textSnackbar = 'Notfication not supported'
-        this.snackbar = true
+        that.textSnackbar = 'Notfication not supported'
+        that.snackbar = true
       }
     },
     getDate(dateServer) {
