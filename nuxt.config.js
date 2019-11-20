@@ -20,6 +20,12 @@ export default {
         'http-equiv': 'origin-trial',
         content:
           'AoSf+6UJeKykwgPsRo0fusjoqlCoj+J/2CROiTadTkiSp1QTrDPY2HtBo0IOmBMjIP1+j8mcHwJmA7StEqnxgw8AAABxeyJvcmlnaW4iOiJodHRwczovL2ZlcnZlbnQtaG9wcGVyLWM0NTg1ZS5uZXRsaWZ5LmNvbTo0NDMiLCJmZWF0dXJlIjoiUGVyaW9kaWNCYWNrZ3JvdW5kU3luYyIsImV4cGlyeSI6MTU3Nzg4MzAxNH0='
+      },
+      // for localhost
+      {
+        'http-equiv': 'origin-trial',
+        content:
+          'Av1jLTKx8gduIdfHLQKuigWSvmcmYY4XCZz5elvSfakHCzuhrkIZQNMPadorKI3OKlPQxal7ihcyhHIgjrRFsAIAAABZeyJvcmlnaW4iOiJodHRwOi8vbG9jYWxob3N0OjMwMDAiLCJmZWF0dXJlIjoiUGVyaW9kaWNCYWNrZ3JvdW5kU3luYyIsImV4cGlyeSI6MTU3Nzg4NzU1MX0='
       }
     ],
     link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }]

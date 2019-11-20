@@ -235,6 +235,20 @@ export default {
     if (status.state === 'granted') {
       // PBS can be used.
       console.log('PBS can be used')
+      // registering for PBS
+      const registration = await navigator.serviceWorker.ready
+      if ('periodicSync' in registration) {
+        try {
+          registration.periodicSync.register('weather-sync', {
+            // An interval of one day.
+            minInterval: 24 * 60 * 60 * 1000
+          })
+          console.log('weather-sync is registered')
+        } catch (error) {
+          // PBS cannot be used.
+          console.log('PBS cannot be registered')
+        }
+      }
     } else {
       // PBS cannot be used.
       console.log('PBS cannot be used')
