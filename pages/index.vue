@@ -92,7 +92,6 @@ export default {
       this.getCityInput()
     },
     getWeather(url) {
-      this.overlay = true
       axios
         .get(url)
         .then((response) => {
@@ -112,7 +111,7 @@ export default {
 
           this.$localForage.setItem('recentCitys', this.recentCitys)
 
-          // this.overlay = false //TODO: check if required
+          this.overlay = false //TODO: check if required
         })
         .catch((error) => {
           if ($nuxt.isOffline) {
@@ -129,29 +128,40 @@ export default {
     },
     notify() {
       let that = this
-      if ('Notification' in window) {
-        Notification.requestPermission().then(function(result) {
-          that.textSnackbar = 'Nofication suppoerted: ' + result
-          that.snackbar = true
-
-          console.log(result)
-          if (result === 'granted') {
-            that.textSnackbar = 'Nofication accepted'
-            that.snackbar = true
-
-            var options = {
-              body: 'you will get the last weather updates',
-              vibrate: [200, 100, 200]
-            }
-            var notification = new Notification(
-              'Progressive Weather says: ',
-              options
-            )
-          }
+      try {
+        Notification.requestPermission().then((result) => {
+          this.displayNotification(result)
         })
-      } else {
-        that.textSnackbar = 'Notfication not supported'
-        that.snackbar = true
+      } catch (error) {
+        // Safari doesn't return a promise for requestPermissions and it
+        // throws a TypeError. It takes a callback as the first argument
+        // instead.
+        if (error instanceof TypeError) {
+          Notification.requestPermission((result) => {
+            this.displayNotification(result)
+          })
+        } else {
+          throw error
+        }
+      }
+    },
+    displayNotification(result) {
+      this.textSnackbar = 'Nofication supported: ' + result
+      this.snackbar = true
+
+      console.log(result)
+      if (result === 'granted') {
+        this.textSnackbar = 'Nofication accepted'
+        this.snackbar = true
+
+        var options = {
+          body: 'you will get the last weather updates',
+          vibrate: [200, 100, 200]
+        }
+        var notification = new Notification(
+          'Progressive Weather says: ',
+          options
+        )
       }
     },
     getDate(dateServer) {
