@@ -13,23 +13,29 @@ self.addEventListener('periodicsync', (event) => {
           self.registration.showNotification(title, options)
         })
         .catch((err) => {
-          console.log('cannt update data')
+          console.log('cannot update data')
         })
     )
   }
 })
 
 async function syncContent() {
-  let search = 'Munich'
-  let appId = 'd944d4eb280d335ab5214b3dfae879c5'
+  //get cached urls
+  const apiCache = await self.caches.open('api-cache')
+  let urls = await apiCache.keys()
 
-  console.log('Updating data...')
-  let url = `https://api.openweathermap.org/data/2.5/weather?q=${search}&units=metric&APPID=${appId}`
+  // make new request so that workbox will update the cached data
+  urls.forEach((elem) => {
+    updateCache(elem.url)
+    console.log(elem.url)
+  })
+}
 
-  const response = await fetch(url)
-  const myJson = await response.json()
-  console.log(JSON.stringify(myJson))
-  //TODO try to get workbox to cach the request
-
-  // send get request for all cached city to update the cache (workbox will update it)
+async function updateCache(url) {
+  const strategy = new workbox.strategies.NetworkFirst({
+    cacheName: 'api-cache'
+  })
+  const response = await strategy.makeRequest({
+    request: url
+  })
 }
