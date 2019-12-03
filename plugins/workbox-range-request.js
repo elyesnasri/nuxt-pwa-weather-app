@@ -2,7 +2,7 @@ const precacheCacheName = workbox.core.cacheNames.precache
 console.log('[Workbox]: ' + precacheCacheName)
 
 workbox.routing.registerRoute(
-  new RegExp('^api.openweathermap'),
+  new RegExp('^https://api.openweathermap.org/.*'),
   new workbox.strategies.NetworkFirst({
     cacheName: 'api-cache',
     plugins: [
