@@ -2,7 +2,7 @@
   <v-app light class="app" :class="dayTime">
     <v-content>
       <nuxt />
-      <v-btn fixed dark fab top left @click="changeTheme()">
+      <v-btn fixed dark fab bottom left @click="changeTheme()">
         <v-icon>mdi-brightness-6</v-icon>
       </v-btn>
     </v-content>
