@@ -53,6 +53,11 @@ export default {
 </script>
 
 <style>
+@font-face {
+  font-family: 'materialdesignicons';
+  src: url(https://cdn.jsdelivr.net/npm/@mdi/font@latest/fonts/materialdesignicons-webfont.woff2?v=4.6.95);
+  font-display: swap;
+}
 .app {
   height: 100vh;
   width: 100vw;
