@@ -28,7 +28,13 @@ export default {
           'Av1jLTKx8gduIdfHLQKuigWSvmcmYY4XCZz5elvSfakHCzuhrkIZQNMPadorKI3OKlPQxal7ihcyhHIgjrRFsAIAAABZeyJvcmlnaW4iOiJodHRwOi8vbG9jYWxob3N0OjMwMDAiLCJmZWF0dXJlIjoiUGVyaW9kaWNCYWNrZ3JvdW5kU3luYyIsImV4cGlyeSI6MTU3Nzg4NzU1MX0='
       }
     ],
-    link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }]
+    link: [
+      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
+      {
+        rel: 'stylesheet',
+        href: 'https://fonts.googleapis.com/css?family=Roboto&display=swap'
+      }
+    ]
   },
   /*
    ** Customize the progress-bar color
