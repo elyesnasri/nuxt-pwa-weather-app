@@ -98,13 +98,6 @@ export default {
             Math.round(response.data.main.temp_max).toString() + '°'
           this.weatherData.overcast = response.data.weather[0].description
           this.weatherData.date = this.getDate(response.data.dt * 1000)
-
-          //caching citys
-          if (!this.recentCitys.includes(this.weatherData.city))
-            this.recentCitys.push(this.weatherData.city)
-
-          this.$localForage.setItem('recentCitys', this.recentCitys)
-
           this.overlay = false //TODO: check if required
         })
         .catch((error) => {
@@ -119,6 +112,11 @@ export default {
             this.snackbar = true
           }
         })
+      //caching citys
+      if (!this.recentCitys.includes(this.weatherData.city))
+        this.recentCitys.push(this.weatherData.city)
+
+      this.$localForage.setItem('recentCitys', this.recentCitys)
     },
     getDate(dateServer) {
       let date = new Date(dateServer)
@@ -131,11 +129,7 @@ export default {
       let actTime = new Date()
     },
     getGeoLocation() {
-      console.log('getLocation...')
-
       if (navigator.geolocation) {
-        console.log('getCurrentPosition')
-
         navigator.geolocation.getCurrentPosition(this.getCoords, this.geoError)
       }
     },
@@ -164,15 +158,11 @@ export default {
       await axios
         .get(url)
         .then((response) => {
-          console.log(response)
-
           cityName = response.data.name
         })
         .catch((err) => {
           console.log(err)
         })
-      console.log('cityName:' + cityName)
-
       return cityName
     }
   },
@@ -180,8 +170,6 @@ export default {
     this.populateAutocompleteFromCache()
 
     if ($nuxt.isOffline) {
-      console.log('Offline')
-
       this.recentCoords = await this.$localForage.getItem('recentCoords')
       if (this.recentCoords) {
         let url = `https://api.openweathermap.org/data/2.5/weather?units=metric&lat=${this.recentCoords.lat}&lon=${this.recentCoords.long}&APPID=${this.appId}`
@@ -198,30 +186,15 @@ export default {
         this.snackbar = true
       }
     } else {
-      console.log('Online')
-
       this.getGeoLocation()
     }
     this.overlay = true
-
-    // oneSignal subscription to push notification
-    this.$OneSignal.push(() => {
-      this.$OneSignal.isPushNotificationsEnabled((isEnabled) => {
-        if (isEnabled) {
-          console.log('Push notifications are enabled!')
-        } else {
-          console.log('Push notifications are not enabled yet.')
-        }
-      })
-    })
 
     //PBS
     const status = await navigator.permissions.query({
       name: 'periodic-background-sync'
     })
     if (status.state === 'granted') {
-      // PBS can be used.
-      console.log('PBS can be used')
       // registering for PBS
       const registration = await navigator.serviceWorker.ready
       if ('periodicSync' in registration) {
@@ -230,10 +203,9 @@ export default {
             // Minimum interval at which the sync may fire (one day).
             minInterval: 30 * 60 * 1000
           })
-          console.log('weather-sync is registered')
         } catch (error) {
           // PBS cannot be used.
-          console.log('PBS cannot be registered')
+          console.log(err)
         }
       }
     } else {
