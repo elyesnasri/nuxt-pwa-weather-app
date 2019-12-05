@@ -25,18 +25,39 @@ export default {
       } else {
         this.dayTime = 'day'
       }
+    },
+    setLightTheme() {
+      this.dayTime = 'day'
+      this.$vuetify.theme.dark = false
+    },
+    setDarkTheme() {
+      this.dayTime = 'night'
+      this.$vuetify.theme.dark = true
+    },
+    setThemeByTime() {
+      let date = new Date()
+      let h = date.getHours()
+
+      if (h > 6 && h < 17) {
+        this.setLightTheme()
+      } else {
+        this.setDarkTheme()
+      }
     }
   },
   mounted() {
-    let date = new Date()
-    let h = date.getHours()
-
-    if (h > 6 && h < 17) {
-      this.dayTime = 'day'
-      this.$vuetify.theme.dark = false
+    if (
+      window.matchMedia &&
+      window.matchMedia('(prefers-color-scheme: dark)').matches
+    ) {
+      this.setDarkTheme()
+    } else if (
+      window.matchMedia &&
+      window.matchMedia('(prefers-color-scheme: light)').matches
+    ) {
+      this.setLightTheme()
     } else {
-      this.dayTime = 'night'
-      this.$vuetify.theme.dark = true
+      this.setThemeByTime()
     }
   }
 }

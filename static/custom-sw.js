@@ -56,3 +56,20 @@ async function updateCache(url) {
     request: url
   })
 }
+
+self.addEventListener('push', function(event) {
+  event.waitUntil(
+    syncContent().then(function() {
+      const title = 'Weather Updated'
+      const options = {
+        body: 'Weather data are up to date (Push)',
+        tag: 'confirm-notification',
+        renotify: true,
+        actions: [
+          { action: 'confirm', title: 'Okay' },
+          { action: 'cancel', title: 'Cancel' }
+        ]
+      }
+    })
+  )
+})
