@@ -11,15 +11,9 @@
             :items="recentCitys"
             filled
             rounded
-            clearable
-            open-on-clear
+            aria-label="search city"
           ></v-autocomplete>
         </v-form>
-      </v-col>
-      <v-col cols="12" align="center">
-        <v-btn text icon @click="notify">
-          <v-icon>mdi-bell</v-icon>
-        </v-btn>
       </v-col>
       <Weather :data="weatherData" />
       <v-snackbar v-model="snackbar">
@@ -126,50 +120,6 @@ export default {
           }
         })
     },
-    notify() {
-      let that = this
-      try {
-        Notification.requestPermission().then((result) => {
-          this.displayNotification(result)
-        })
-      } catch (error) {
-        // Safari doesn't return a promise for requestPermissions and it
-        // throws a TypeError. It takes a callback as the first argument
-        // instead.
-        if (error instanceof TypeError) {
-          Notification.requestPermission((result) => {
-            this.displayNotification(result)
-          })
-        } else {
-          throw error
-          this.textSnackbar = 'Notification not Supported'
-        }
-      }
-    },
-    displayNotification(result) {
-      this.textSnackbar = 'Nofication supported: ' + result
-      this.snackbar = true
-
-      console.log(result)
-      if (result === 'granted') {
-        this.textSnackbar = 'Nofication accepted'
-        this.snackbar = true
-
-        var options = {
-          body: 'you will get the last weather updates',
-          vibrate: [200, 100, 200]
-        }
-        if (navigator.userAgent.indexOf('Chrome') != -1) {
-          if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.ready.then((swreg) => {
-              swreg.showNotification('Weather App', options)
-            })
-          }
-        } else if (navigator.userAgent.indexOf('Safari') != -1) {
-          var notification = new Notification('Weather App', options)
-        }
-      }
-    },
     getDate(dateServer) {
       let date = new Date(dateServer)
 
@@ -272,8 +222,6 @@ export default {
     if (status.state === 'granted') {
       // PBS can be used.
       console.log('PBS can be used')
-      this.textSnackbar = 'PBS can be used'
-      this.snackbar = true
       // registering for PBS
       const registration = await navigator.serviceWorker.ready
       if ('periodicSync' in registration) {
@@ -291,8 +239,6 @@ export default {
     } else {
       // PBS cannot be used.
       console.log('PBS cannot be used')
-      this.textSnackbar = 'PBS cannot be used'
-      this.snackbar = true
     }
   }
 }

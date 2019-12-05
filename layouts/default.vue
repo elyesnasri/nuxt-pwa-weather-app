@@ -2,9 +2,6 @@
   <v-app light class="app" :class="dayTime">
     <v-content>
       <nuxt />
-      <v-btn fixed dark fab bottom left @click="changeTheme()">
-        <v-icon>mdi-brightness-6</v-icon>
-      </v-btn>
     </v-content>
   </v-app>
 </template>
@@ -18,14 +15,6 @@ export default {
     }
   },
   methods: {
-    changeTheme() {
-      this.$vuetify.theme.dark = !this.$vuetify.theme.dark
-      if (this.dayTime === 'day') {
-        this.dayTime = 'night'
-      } else {
-        this.dayTime = 'day'
-      }
-    },
     setLightTheme() {
       this.dayTime = 'day'
       this.$vuetify.theme.dark = false
