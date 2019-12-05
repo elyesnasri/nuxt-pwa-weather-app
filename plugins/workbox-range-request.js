@@ -3,7 +3,7 @@ console.log('[Workbox]: ' + precacheCacheName)
 
 workbox.routing.registerRoute(
   new RegExp('^https://api.openweathermap.org/.*'),
-  new workbox.strategies.NetworkFirst({
+  new workbox.strategies.StaleWhileRevalidate({
     cacheName: 'api-cache',
     plugins: [
       new workbox.cacheableResponse.Plugin({
