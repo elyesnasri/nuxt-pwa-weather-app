@@ -163,7 +163,9 @@ export default {
       let recentCitys = await this.$localForage.getItem('recentCitys')
 
       for (let city in recentCitys) {
-        this.recentCitys.push(recentCitys[city])
+        if (city !== '') {
+          this.recentCitys.push(recentCitys[city])
+        }
       }
     },
     async getCityName(url) {
