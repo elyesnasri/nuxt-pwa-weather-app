@@ -120,7 +120,7 @@ export default {
         .catch((error) => {
           if ($nuxt.isOffline) {
             this.textSnackbar =
-              'Your are offline! Turn your internet on to get the last data &#128540;' +
+              'Your are offline! Turn your internet on to get the last data ' +
               String.fromCodePoint(0x1f605)
             this.snackbar = true
           } else {
@@ -153,7 +153,7 @@ export default {
       this.recentCoords.lat = lat
       this.recentCoords.long = long
       // check this localforage setitem
-      //this.$localForage.setItem('recentCoords', this.recentCoords)
+      this.$localForage.setItem('recentCoords', this.recentCoords)
       this.getWeather(url)
     },
     geoError() {
