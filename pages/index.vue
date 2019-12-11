@@ -12,6 +12,7 @@
             filled
             rounded
             aria-label="search city"
+            autocomplete="off"
           ></v-autocomplete>
         </v-form>
       </v-col>
@@ -77,6 +78,8 @@ export default {
   methods: {
     getCityInput() {
       if (this.search) {
+        console.log('search: ', this.search)
+
         let url = `https://api.openweathermap.org/data/2.5/weather?q=${this.search}&units=metric&APPID=${this.appId}`
         this.getWeather(url)
       }
@@ -85,11 +88,13 @@ export default {
       this.search = city
       this.getCityInput()
     },
-    getWeather(url) {
+    async getWeather(url) {
       axios
         .get(url)
         .then((response) => {
           this.weatherData.city = response.data.name
+          console.log('weathercity: ', this.weatherData.city)
+
           this.weatherData.currentTemp =
             Math.round(response.data.main.temp).toString() + '°'
           this.weatherData.minTemp =
@@ -99,6 +104,18 @@ export default {
           this.weatherData.overcast = response.data.weather[0].description
           this.weatherData.date = this.getDate(response.data.dt * 1000)
           this.overlay = false //TODO: check if required
+
+          //caching citys
+          if (
+            this.weatherData.city !== '' &&
+            !this.recentCitys.includes(this.weatherData.city)
+          ) {
+            console.log('caching: ', this.weatherData.city)
+
+            this.recentCitys.push(this.weatherData.city)
+            this.$localForage.setItem('recentCitys', this.recentCitys)
+            console.log('cached: ', this.weatherData.city)
+          }
         })
         .catch((error) => {
           if ($nuxt.isOffline) {
@@ -112,11 +129,6 @@ export default {
             this.snackbar = true
           }
         })
-      //caching citys
-      if (!this.recentCitys.includes(this.weatherData.city))
-        this.recentCitys.push(this.weatherData.city)
-
-      this.$localForage.setItem('recentCitys', this.recentCitys)
     },
     getDate(dateServer) {
       let date = new Date(dateServer)
@@ -133,14 +145,15 @@ export default {
         navigator.geolocation.getCurrentPosition(this.getCoords, this.geoError)
       }
     },
-    async getCoords(position) {
+    getCoords(position) {
       let lat = position.coords.latitude
       let long = position.coords.longitude
       let url = `https://api.openweathermap.org/data/2.5/weather?units=metric&lat=${lat}&lon=${long}&APPID=${this.appId}`
 
       this.recentCoords.lat = lat
       this.recentCoords.long = long
-      this.$localForage.setItem('recentCoords', this.recentCoords)
+      // check this localforage setitem
+      //this.$localForage.setItem('recentCoords', this.recentCoords)
       this.getWeather(url)
     },
     geoError() {
@@ -167,7 +180,7 @@ export default {
     }
   },
   async mounted() {
-    this.populateAutocompleteFromCache()
+    await this.populateAutocompleteFromCache()
 
     if ($nuxt.isOffline) {
       this.recentCoords = await this.$localForage.getItem('recentCoords')
