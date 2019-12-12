@@ -50,14 +50,7 @@ export default {
       window.matchMedia('(prefers-color-scheme: dark)').matches
     ) {
       this.setDarkTheme()
-    } else if (
-      window.matchMedia &&
-      window.matchMedia('(prefers-color-scheme: light)').matches
-    ) {
-      this.setLightTheme()
-    } else {
-      this.setThemeByTime()
-    }
+    } else this.setThemeByTime()
   }
 }
 </script>
