@@ -78,8 +78,6 @@ export default {
   methods: {
     getCityInput() {
       if (this.search) {
-        console.log('search: ', this.search)
-
         let url = `https://api.openweathermap.org/data/2.5/weather?q=${this.search}&units=metric&APPID=${this.appId}`
         this.getWeather(url)
       }
@@ -93,8 +91,6 @@ export default {
         .get(url)
         .then((response) => {
           this.weatherData.city = response.data.name
-          console.log('weathercity: ', this.weatherData.city)
-
           this.weatherData.currentTemp =
             Math.round(response.data.main.temp).toString() + '°'
           this.weatherData.minTemp =
@@ -110,11 +106,8 @@ export default {
             this.weatherData.city !== '' &&
             !this.recentCitys.includes(this.weatherData.city)
           ) {
-            console.log('caching: ', this.weatherData.city)
-
             this.recentCitys.push(this.weatherData.city)
             this.$localForage.setItem('recentCitys', this.recentCitys)
-            console.log('cached: ', this.weatherData.city)
           }
         })
         .catch((error) => {
@@ -163,7 +156,7 @@ export default {
       let recentCitys = await this.$localForage.getItem('recentCitys')
 
       for (let city in recentCitys) {
-        if (city !== '') {
+        if (recentCitys[city] !== '') {
           this.recentCitys.push(recentCitys[city])
         }
       }
@@ -179,6 +172,30 @@ export default {
           console.log(err)
         })
       return cityName
+    },
+    async registerPBS() {
+      //PBS
+      const status = await navigator.permissions.query({
+        name: 'periodic-background-sync'
+      })
+      if (status.state === 'granted') {
+        // registering for PBS
+        const registration = await navigator.serviceWorker.ready
+        if ('periodicSync' in registration) {
+          try {
+            registration.periodicSync.register('weather-sync', {
+              // Minimum interval at which the sync may fire (one day).
+              minInterval: 30 * 60 * 1000
+            })
+          } catch (error) {
+            // PBS cannot be used.
+            console.log(err)
+          }
+        }
+      } else {
+        // PBS cannot be used.
+        console.log('PBS cannot be used')
+      }
     }
   },
   async mounted() {
@@ -203,30 +220,10 @@ export default {
     } else {
       this.getGeoLocation()
     }
+
     this.overlay = true
 
-    //PBS
-    const status = await navigator.permissions.query({
-      name: 'periodic-background-sync'
-    })
-    if (status.state === 'granted') {
-      // registering for PBS
-      const registration = await navigator.serviceWorker.ready
-      if ('periodicSync' in registration) {
-        try {
-          registration.periodicSync.register('weather-sync', {
-            // Minimum interval at which the sync may fire (one day).
-            minInterval: 30 * 60 * 1000
-          })
-        } catch (error) {
-          // PBS cannot be used.
-          console.log(err)
-        }
-      }
-    } else {
-      // PBS cannot be used.
-      console.log('PBS cannot be used')
-    }
+    await this.registerPBS()
   }
 }
 </script>
